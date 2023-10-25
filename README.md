@@ -9,3 +9,24 @@ Project for Information Retrieval course
 - https://www.patreon.com/
 - https://society6.com/
 - https://ko-fi.com/explore
+
+## Setup
+
+Download Poetry to handle the project, then run `poetry install` to install the dependencies.
+
+Poetry creates a virtual environment for the project, to activate it select it as local interpreter in IDE or
+run `poetry shell`
+
+Follow [documentation](https://python-poetry.org/) for further info.
+
+## Troubleshooting
+
+**Remember:** do not name files as popular python modules.
+
+**Problem:** `ModuleNotFoundError: No module named '_bz2'`.
+[solution](https://stackoverflow.com/questions/12806122/missing-python-bz2-module)
+
+```shell
+sudo apt-get install libbz2-dev
+sudo cp /usr/lib/python3.10/lib-dynload/_bz2.cpython-310-x86_64-linux-gnu.so  /usr/local/lib/python3.10/
+```
