@@ -30,3 +30,8 @@ Follow [documentation](https://python-poetry.org/) for further info.
 sudo apt-get install libbz2-dev
 sudo cp /usr/lib/python3.10/lib-dynload/_bz2.cpython-310-x86_64-linux-gnu.so  /usr/local/lib/python3.10/
 ```
+
+**Problem**: 
+Windows
+- set `JAVA_HOME` in system environment variables
+- `jvm.dll` not found, download jdk from oracle containing both JDK and JRE within
