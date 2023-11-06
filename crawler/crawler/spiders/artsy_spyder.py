@@ -64,10 +64,10 @@ class ArtsySpider(scrapy.Spider):
             if price:
                 price = price.strip()
                 
-            href_item_page = elem.xpath('')
+            # href_item_page = elem.xpath('')
             if  author or name or date or price:
                 yield {'img': img, 'author': author, 'name': name, 'date':date, 'price': price, 'category': tag,
-                       'description': ArtsySpider.get_description(href_item_page) }
+                       }
 
         next_page = response.xpath('//a[@data-testid="next"]/@href').get()
         if next_page:

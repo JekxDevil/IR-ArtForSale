@@ -28,7 +28,7 @@ class Society6Spider(scrapy.Spider):
 
         # create an url for each tag
         self.start_urls = [
-            f'https://www.artsy.net/search?q={tag}&context={tag}sort=best_match' for tag in tags]
+            f'https://www.society6.com/search?q={tag}&context={tag}sort=best_match' for tag in tags]
 
         self.artists_urls = []
         if artists:
