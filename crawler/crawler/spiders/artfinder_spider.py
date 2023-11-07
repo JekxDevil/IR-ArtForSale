@@ -70,7 +70,7 @@ class ArtFinderSpider(scrapy.Spider):
         description = response.xpath('//p[@class="body1"]/text()').get()
         title = response.xpath("//div[@class='tab-pane active']//h5/text()").get()
         img = response.xpath('//div[@class="carousel-figure-center"]//figure//img/@src').get()
-        all_tags = response.xpath('//div[@class="artwork-description"]//a/text()').getall()
+        all_tags = response.css('div.artwork-description a::text').getall()
         tags = " ".join(all_tags).strip()
 
         yield {'img': img, 
