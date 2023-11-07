@@ -4,7 +4,7 @@ class CatawikiSpider(scrapy.Spider):
 
     name = "catawiki"
 
-    start_urls = ["https://www.catawiki.com/en/",]
+    start_urls = ["https://www.catawiki.com/en",]
 
     def __init__(self, tags=None, artists=None, searches=None, **kwargs):
         self.default_tags = ["117-modern-contemporary-art", 
