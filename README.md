@@ -31,6 +31,8 @@ sudo apt-get install libbz2-dev
 sudo cp /usr/lib/python3.10/lib-dynload/_bz2.cpython-310-x86_64-linux-gnu.so  /usr/local/lib/python3.10/
 ```
 
+to activate env: source venv/bin/activate
+
 **Problem**: 
 Windows
 - set `JAVA_HOME` in system environment variables
