@@ -27,9 +27,9 @@ def run():
     print(docs_df)
 
     indexer = pt.DFIndexer("./index_3docs", overwrite=True)
-    # deprecated index_ref = indexer.index(docs_df["text"], docs_df["docno"])
-    # index_ref.toString()
-    #index = pt.IndexFactory.of(index_ref)
+    index_ref = indexer.index(docs_df["text"], docs_df["docno"])
+    index_ref.toString()
+    index = pt.IndexFactory.of(index_ref)
 
 
 if __name__ == "__main__":
