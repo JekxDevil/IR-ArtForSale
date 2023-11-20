@@ -78,7 +78,8 @@ class ArtFinderSpider(scrapy.Spider):
                'title': title, 
                'price': price ,
                'description': description,
-               'tags': tags}
+               'tags': tags,
+               'url' : response.url}
 
     @staticmethod
     def get_description():
