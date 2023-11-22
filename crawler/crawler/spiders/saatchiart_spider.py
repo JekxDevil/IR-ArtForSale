@@ -3,19 +3,15 @@ import scrapy
 
 
 class SaatChiSpider(scrapy.Spider):
-
     name = "saatchi"
-
     start_urls = ["https://www.saatchiart.com", ]
 
     def __init__(self, tags=None, artists=None, searches=None, **kwargs):
-        self.default_tags = ["abstract-expressionism", "contemporary",
-                             "contemporary-chinese-art", "contemporary-pop",
-                             "constructivism", "cubism", "design",
-                             "impressionist-and-modern", "mixed-media",
-                             "old-masters", "painting", "photography",
-                             "post-war", "prints", "sculpture", "street-art",
-                             "surrealism", "works-on-paper", "young-british-artist", "pop-art"]
+        self.default_tags = ["abstract-expressionism", "contemporary", "contemporary-chinese-art", "contemporary-pop",
+                             "constructivism", "cubism", "design", "impressionist-and-modern", "mixed-media",
+                             "old-masters", "painting", "photography", "post-war", "prints", "sculpture",
+                             "street-art", "surrealism", "works-on-paper", "young-british-artist", "pop-art"]
+
         if tags == 'null':
             tags = []
         elif tags:
@@ -28,9 +24,8 @@ class SaatChiSpider(scrapy.Spider):
             for query in searches:
                 tags.append(query)
 
-        # create an url for each tag
-        self.start_urls = [
-            f'https://www.saatchiart.com/all?quert={tag}' for tag in tags]
+        # naive: create an url for each tag
+        self.start_urls = [f'https://www.saatchiart.com/all?quert={tag}' for tag in tags]
 
         self.artists_urls = []
         if artists:
@@ -44,18 +39,15 @@ class SaatChiSpider(scrapy.Spider):
         for elem in columns:
             url = elem.xpath('//div[@data-type="artwork-image"]//a/@href').get()
 
-                
             # href_item_page = elem.xpath('')
             if url:
-            # Ensure that the URL is absolute
+                # Ensure that the URL is absolute
                 url = response.urljoin(url)
-
                 yield scrapy.Request(url, callback=self.parseArt)
 
         next_page = response.xpath('//a[@data-type="next"]/@href').get()
         if next_page:
             yield response.follow(next_page, callback=self.parse)
-
 
     def parseArt(self, response):
         price = response.xpath("//div[@class='krw7aj-0 uyv957-3 kpRguR bGUIw']/text()").get()
@@ -65,14 +57,20 @@ class SaatChiSpider(scrapy.Spider):
         description = response.xpath('//p[@data-type="description"]/text()').get()
         title = response.xpath("//h1[@data-type='title-text']/text()").get()
         img = response.xpath('//div[@data-type="image"]//img/@src').get()
+        keywords = response.css('div[data-type="keyword-row"] a::text').getall()
+        creation_subject = response.xpath("//div[@data-type='about-artwork']"
+                                          "//div[@data-type='accordion-content']"
+                                          "//div//p//*[@data-type='accordion-sub-value']/text()").getall()
+        materials_styles_medium = response.xpath("//div[@data-type='about-artwork']"
+                                                 "//div[@data-type='accordion-content']"
+                                                 "//div//p//*[@data-type='accordion-sub-value']//a/text()").getall()
 
-        yield {'img': img, 
-               'author': author,
-               'title': title, 
-               'price': price ,
-               'description': description,
-               'url' : response.url}
-
-    @staticmethod
-    def get_description():
-        pass
+        yield {
+            'img': img,
+            'author': author,
+            'title': title,
+            'price': price,
+            'description': description,
+            'url': response.url,
+            'tags': keywords + creation_subject + materials_styles_medium
+        }
