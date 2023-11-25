@@ -51,14 +51,15 @@ class ArtsySpider(scrapy.Spider):
             # Ensure that the URL is absolute
                 url = response.urljoin(url)
 
-                yield scrapy.Request(url, callback=self.parseArt)
+                yield scrapy.Request(url, callback=lambda response, tag=tag: self.parseArt(response, tag))
+
 
         next_page = response.xpath('//a[@data-testid="next"]/@href').get()
         if next_page:
             yield response.follow(next_page, callback=self.parse)
 
 
-    def parseArt(self, response):
+    def parseArt(self, response, tag):
         price = response.xpath("//div[@class='Box-sc-15se88d-0 Text-sc-18gcpao-0 eXbAnU drBoOI']/text()").get()
         author = response.xpath("//a[@class='RouterLink__RouterAwareLink-sc-1nwbtp5-0 dikvRF ArtworkSidebarArtists__StyledArtistLink-eqhzb8-0 jdgrPD']/text()").get()
         title = response.xpath("//h1[@class='Box-sc-15se88d-0 Text-sc-18gcpao-0 caIGcn bhlKfb']//i/text()").get()
