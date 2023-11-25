@@ -69,7 +69,8 @@ class ArtsySpider(scrapy.Spider):
                'author': author,
                'title': title, 
                'price': price ,
-               'url' : response.url}
+               'url' : response.url,
+               'tag': tag}
 
     @staticmethod
     def get_description():
