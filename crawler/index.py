@@ -1,3 +1,16 @@
+"""
+get postings:
+index.getInvertedIndex().getPostings(pointer:LexiconEntry)
+
+To search:
+br = pt.BatchRetrieve(index, wmodel="Tf") #Alternative Models: "TF_IDF", "BM25"
+br.search("best")
+queries = pd.DataFrame([["q1", "blue best"], ["q2", "bright blue sky"]], columns=["qid", "query"])
+br.transform(queries) <----- preferred
+
+Retrieve model?
+bm25 = pt.BatchRetrieve(index, wmodel="BM25")
+"""
 import pandas as pd
 import json
 import pyterrier as pt
@@ -6,6 +19,23 @@ import pyterrier as pt
 def run():
     if not pt.started():
         pt.init()
+
+    with open('saatchiart.json') as f:
+        data = json.load(f)
+        df = pd.DataFrame(data)
+        df['docno'] = [f'd{i + 1}' for i in range(len(df))]
+        df.info()
+        pd_indexer = pt.DFIndexer('./index_saatchiart', overwrite=True)
+        # index columns of dataframe
+        index_ref = pd_indexer.index(df['author'], df['title'], df['description'], df['docno']) # add tags
+        index = pt.IndexFactory.of(index_ref)
+        print('Index stats: ', index.getCollectionStatistics().toString())
+        print('lexicon: ')
+        for kv in index.getLexicon():
+            print(f'{kv.getKey()} -> {kv.getValue().toString()}')
+
+    return
+
 
     with open('artsyresult.json') as f:
         data = json.load(f)
@@ -62,6 +92,5 @@ def run():
             print("%s -> %s " % (kv.getKey(), kv.getValue().toString() ))
 
     
-
 if __name__ == "__main__":
     run()
