@@ -24,7 +24,7 @@ Follow [documentation](https://python-poetry.org/) for further info.
 To run crawler:
 
 ```shell
-scrapy crawl crawler-name -o file-data.json
+scrapy crawl crawler-name -O file-data.json
 ```
 
 ## Troubleshooting
