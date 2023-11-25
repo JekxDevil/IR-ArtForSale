@@ -19,6 +19,14 @@ run `poetry shell`
 
 Follow [documentation](https://python-poetry.org/) for further info.
 
+## Crawler
+
+To run crawler:
+
+```shell
+scrapy crawl crawler-name -o file-data.json
+```
+
 ## Troubleshooting
 
 **Remember:** do not name files as popular python modules.
@@ -37,3 +45,13 @@ to activate env: source venv/bin/activate
 Windows
 - set `JAVA_HOME` in system environment variables
 - `jvm.dll` not found, download jdk from oracle containing both JDK and JRE within
+
+### DevOps
+
+pip3 installs from PyPI an incompatible version of pyterrier `0.9.x` with latest pandas `2.0.0 >`
+
+Spotted issue in `pyterrier/index.py` file from pyterrier module
+
+https://stackoverflow.com/questions/76200452/error-while-iterating-over-dataframe-columns-entries-attributeerror-series
+
+Solution: enforce newer pyterrier version `0.10.x` from repository
