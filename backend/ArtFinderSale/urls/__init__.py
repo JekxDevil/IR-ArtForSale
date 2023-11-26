@@ -1,5 +1,5 @@
 from django.urls import path, include
 
 urlpatterns = [
-    path("documents/", include(".search"))
+    path("documents/", include("ArtFinderSale.views.search"))
 ]
