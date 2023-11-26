@@ -8,9 +8,9 @@
     <div class="flex flex-column justify-content-center w-full align-items-center">
       <span v-if="!checked" class="p-input-icon-left w-9 flex align-items-center flex-row justify-content-center">
             <i class="pi pi-search"/>
-            <InputText placeholder="Search" class="w-full"/>
+            <InputText placeholder="Search" v-model="query" class="w-full"/>
     </span>
-      <Button label="Search" class="mt-4 mb-4" rounded></Button>
+      <Button label="Search" class="mt-4 mb-4" rounded @click="mymethod(query)"></Button>
     </div>
     <div v-if="checked" class="advancedSearch w-9 flex align-items-center flex-column justify-content-center">
       <div class="flex flex-row w-full justify-content-evenly p-5">
@@ -91,6 +91,7 @@
 </template>
 <script setup lang="ts">
 import {defineComponent, ref, onMounted} from 'vue';
+import {useDocumentStore} from '@/stores/document';
 import InputText from "primevue/inputtext";
 import InputSwitch from "primevue/inputswitch";
 import MultiSelect from "primevue/multiselect";
@@ -106,6 +107,7 @@ const selectedTags = ref([]);
 const min = ref(0)
 const max = ref(1000000000)
 const retrievedArt = ref([])
+const query = ref('');
 
 const responsiveOptions = ref([
   {
@@ -197,6 +199,12 @@ const trimString = (input: string) => {
   }
   return input;
 };
+
+const mymethod = async (q: string) => {
+  const documentStore = useDocumentStore();
+  const res = await documentStore.getDocuments(q);
+  console.log({res});
+}
 
 defineComponent({
   name: 'SearchPage',

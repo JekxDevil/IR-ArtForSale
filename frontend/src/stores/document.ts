@@ -10,9 +10,9 @@ export const useDocumentStore = defineStore({
         hasFields: (state) => state.documents.length > 0,
     },
     actions: {
-        async getDocuments(query) {
+        async getDocuments(query: string) {
             try {
-                const response = await axios.get("/api/search/get-documents/", { params: { query } });
+                const response = await axios.get(`http://localhost:8000/api/documents/get-documents/${query}/`);
                 this.documents = response.data.documents;
             } catch (error) {
                 console.error("Error fetching fields:", error);

@@ -12,7 +12,7 @@ export default defineConfig({
                 // search up for workspace root
                 searchForWorkspaceRoot(process.cwd()),
                 // custom rules
-                '/home/filippo/node_modules/primeicons/fonts/'
+                '~/node_modules/primeicons/fonts/'
             ],
         },
     },
