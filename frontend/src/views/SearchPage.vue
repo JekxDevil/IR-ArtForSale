@@ -5,10 +5,13 @@
       <label class="p-2">Advanced search</label>
       <InputSwitch v-model="checked" class="p-2"/>
     </div>
-    <span v-if="!checked" class="p-input-icon-left w-9 flex align-items-center flex-row justify-content-center">
+    <div class="flex flex-column justify-content-center w-full align-items-center">
+      <span v-if="!checked" class="p-input-icon-left w-9 flex align-items-center flex-row justify-content-center">
             <i class="pi pi-search"/>
             <InputText placeholder="Search" class="w-full"/>
     </span>
+      <Button label="Search" class="mt-4 mb-4" rounded></Button>
+    </div>
     <div v-if="checked" class="advancedSearch w-9 flex align-items-center flex-column justify-content-center">
       <div class="flex flex-row w-full justify-content-evenly p-5">
         <div class="flex flex-column w-20rem">
@@ -31,19 +34,39 @@
         <div class="flex flex-column w-20rem">
           <label>Minimum Price</label>
           <InputNumber v-model="min" inputId="horizontal-buttons" buttonLayout="horizontal" mode="decimal" showButtons
-                       :min="0" :max="100" :pt="{input: {class: 'w-1rem'}}"/>
+                       :min="0" :max="100000000" decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" :pt="{input: {class: 'w-1rem'}}"/>
         </div>
         <div class="flex flex-column w-20rem">
           <label>Maximum Price</label>
           <InputNumber v-model="max" inputId="horizontal-buttons" buttonLayout="horizontal" mode="decimal" showButtons
-                       :min="0" :max="100" :pt="{input: {class: 'w-1rem'}}"/>
+                       :min="0" :max="100000000" decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" :pt="{input: {class: 'w-1rem'}}"/>
         </div>
       </div>
     </div>
-    <div class="results w-9 flex flex-row justify-content-between"
+    <div class="results w-9 flex flex-column justify-content-between"
          style="border-top: solid 1px #FFD700">
+      <div class="recomandations flex flex-column justiy-content-center align-items-center">
+        <h1>You might also like</h1>
+        <Carousel :value="retrievedArt" circular :num-scroll="1" :responsiveOptions="responsiveOptions" class="w-4 h-full"   :autoplayInterval="3000" >
+          <template #item="slotProps">
+            <div class="border-1 surface-border border-round m-2 text-center py-5  px-3" style="height:600px">
+              <div class="mb-3">
+                <img :src="slotProps.data.img" :alt="slotProps.data.title" class="w-full max-h-20rem border-round-top" style="object-fit:cover; object-position: center"/>
+              </div>
+              <div>
+                <h4 class="mb-1">{{ trimString(slotProps.data.title) }}</h4>
+                <p class="mt-0 mb-3">{{ slotProps.data.price }}</p>
+                <Tag v-for="(tag, index) in slotProps.data.tags" :key="index" :value="tag" class="p-1 ml-1" rounded></Tag>
+                <div class="mt-5 flex align-items-center justify-content-center gap-2">
+                  <a :href="slotProps.data.url" target="_blank"><Button icon="pi pi-check" label="Visit Page" :pt="{root: {style: 'bakcground-color: #0013de' }}"/></a>
+                </div>
+              </div>
+            </div>
+          </template>
+        </Carousel>
+      </div>
       <div class="cardsResult flex flex-column justiy-content-center align-items-center">
-        <Card v-for="(item, index) in retrievedArt" :key="index" class="w-5 p-10 mt-8" style="border:solid 2px #FFD700 ">
+        <Card v-for="(item, index) in retrievedArt" :key="index" class="w-5 p-10 mt-8" style="box-shadow: 0px 0px 15px 12px #646464; ">
           <template #header>
             <img alt="user header"  style="object-fit:cover; object-position: center"
                  class="w-full max-h-20rem border-round-top" :src="item.img" />
@@ -54,15 +77,15 @@
             <p class="m-0">
               {{item.description}}
             </p>
+            <Tag v-for="(tag, index) in item.tags" :key="index" :value="tag" class="p-1 mr-1 mt-5" rounded></Tag>
           </template>
           <template #footer>
             <a :href="item.url" target="_blank"><Button icon="pi pi-check" label="Visit Page" :pt="{root: {style: 'bakcground-color: #0013de' }}"/></a>
+
           </template>
         </Card>
       </div>
-      <div class="recomandations flex flex-column justiy-content-center align-items-center">
-        Rec
-      </div>
+
     </div>
   </div>
 </template>
@@ -74,6 +97,8 @@ import MultiSelect from "primevue/multiselect";
 import InputNumber from "primevue/inputnumber"
 import Button from "primevue/button"
 import Card from "primevue/card"
+import Carousel from "primevue/carousel"
+import Tag from 'primevue/tag';
 
 const checked = ref(false);
 const tags = ref([]);
@@ -81,6 +106,29 @@ const selectedTags = ref([]);
 const min = ref(0)
 const max = ref(1000000000)
 const retrievedArt = ref([])
+
+const responsiveOptions = ref([
+  {
+    breakpoint: '1400px',
+    numVisible: 2,
+    numScroll: 1
+  },
+  {
+    breakpoint: '1199px',
+    numVisible: 3,
+    numScroll: 1
+  },
+  {
+    breakpoint: '767px',
+    numVisible: 2,
+    numScroll: 1
+  },
+  {
+    breakpoint: '575px',
+    numVisible: 1,
+    numScroll: 1
+  }
+]);
 
 onMounted(() => {
   tags.value = ["Primo", "Secondo", "Terzo"];
@@ -91,7 +139,7 @@ onMounted(() => {
       "title": "Abstract Painting Contemporary Original art on Plexiglass One of a kind Framed Ready to Hang Signed with Certificate of Authenticity",
       "price": "£569.39",
       "description": "ARTIST: Vahe Yeremyan",
-      "tags": "",
+      "tags": ["primo", "secondo"],
       "url": "https://www.artfinder.com/product/abstract-painting-contemporary-original-art-on-plexiglass-o-cb0c/"
     },
     {
@@ -100,7 +148,7 @@ onMounted(() => {
       "title": "Constructivism (from \"Ostensible abstraction\" set)",
       "price": null,
       "description": "\"Constructivism\" is the thirteenth photograph from \"Ostensible abstraction\" set.*",
-      "tags": "",
+      "tags": ["primo", "secondo"],
       "url": "https://www.artfinder.com/product/constructivism-from-ostensible-abstraction-set/"
     },
     {
@@ -109,7 +157,7 @@ onMounted(() => {
       "title": "Cafe at Tate modern.",
       "price": "£285",
       "description": "Original oil painting of the cafeteria at London’s Tate modern with shaded lighting.",
-      "tags": "",
+      "tags": ["primo", "secondo"],
       "url": "https://www.artfinder.com/product/cafe-at-tate-modern-e1f3c/"
     },
     {
@@ -118,12 +166,37 @@ onMounted(() => {
       "title": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
       "price": "£1,200",
       "description": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
-      "tags": "",
+      "tags": ["primo", "secondo"],
+      "url": "https://www.artfinder.com/product/abstract-synapses-ive-never-heard-silence-quite-this-loud-2/"
+    },
+    {
+      "img": "https://d3rf6j5nx5r04a.cloudfront.net/lyjZ95ziOtJv-d9UrbKl6V7zMcE=/560x0/product/4/1/ffc0daf3464a4bfa9c30db8dc1f34803_opt.jpg",
+      "author": "Lucy Moore",
+      "title": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
+      "price": "£1,200",
+      "description": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
+      "tags": ["primo", "secondo"],
+      "url": "https://www.artfinder.com/product/abstract-synapses-ive-never-heard-silence-quite-this-loud-2/"
+    },
+    {
+      "img": "https://d3rf6j5nx5r04a.cloudfront.net/lyjZ95ziOtJv-d9UrbKl6V7zMcE=/560x0/product/4/1/ffc0daf3464a4bfa9c30db8dc1f34803_opt.jpg",
+      "author": "Lucy Moore",
+      "title": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
+      "price": "£1,200",
+      "description": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
+      "tags": ["primo", "secondo"],
       "url": "https://www.artfinder.com/product/abstract-synapses-ive-never-heard-silence-quite-this-loud-2/"
     }
   ];
   console.log(retrievedArt)
 });
+
+const trimString = (input: string) => {
+  if (input.length > 30) {
+    return input.substring(0, 30) + '...';
+  }
+  return input;
+};
 
 defineComponent({
   name: 'SearchPage',
@@ -136,9 +209,13 @@ body {
 }
 
 h1 {
-  background: linear-gradient(to bottom right, #0013de, #FFD700);
+  background: rgb(212,175,55);
+  background: linear-gradient(349deg, rgba(212,175,55,1) 27%, rgba(20,40,208,1) 94%);
   -webkit-background-clip: text;
   color: transparent;
+}
+.p-tag {
+  background-color: #5565f5
 }
 
 .p-inputswitch-slider {
@@ -146,7 +223,7 @@ h1 {
   color: #0013de
 }
 
-.p-button {
-  background-color: #0013de;
+.p-button, .p-carousel-indicator  {
+  background-color: #5565f5;
 }
 </style>
