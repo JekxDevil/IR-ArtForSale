@@ -6,10 +6,11 @@ from ..models import Document
 import requests
 
 
-def get_documents(request):
+def get_documents(request, query):
     IP = os.getenv("IP_INDEX")
-    query = request.GET.get('query', '')
-    url = f"{IP}/search/{query}"
+    # query = request.GET.get('query', '')
+    print(f"QUERY ----------------> {query}")
+    url = f"{IP}/search?query={query}"
 
     try:
         response = requests.get(url)

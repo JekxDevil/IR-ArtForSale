@@ -23,12 +23,12 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/", include("ArtForSale.urls")),
 ]
 vue3_routes = []
 if settings.DEBUG:
     vue3_routes += [
-        ("vue3-root", ""),
-        ("vue3-searchEngine", "test/"),
+        ("vue3-root", "")
     ]
 
 
