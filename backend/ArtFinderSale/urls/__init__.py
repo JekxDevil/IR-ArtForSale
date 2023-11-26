@@ -1,5 +1,5 @@
 from django.urls import path, include
 
-urlpatters = [
+urlpatterns = [
     path("documents/", include(".search"))
 ]
