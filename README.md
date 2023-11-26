@@ -27,6 +27,11 @@ To run crawler:
 scrapy crawl crawler-name -O file-data.json
 ```
 
+## Django
+
+To run: 
+./manage.py runserver
+
 ## Troubleshooting
 
 **Remember:** do not name files as popular python modules.
