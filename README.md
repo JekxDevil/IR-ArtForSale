@@ -59,6 +59,12 @@ Run for production:
 uvicorn index:app --port 8001
 ```
 
+Run with
+```shell
+ poetry run python3 -m uvicorn index:app --reload --port 8001
+
+```
+
 ## Troubleshooting
 
 **Remember:** do not name files as popular python modules.

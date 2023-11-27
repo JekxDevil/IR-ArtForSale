@@ -7,15 +7,18 @@ import requests
 
 
 def get_documents(request, query):
-    IP = os.getenv("IP_INDEX")
+    IP = "http://localhost:8001"
     # query = request.GET.get('query', '')
     print(f"QUERY ----------------> {query}")
-    url = f"{IP}/search?query={query}"
+    url = f"{IP}/search?query={query} art"
 
     try:
+        print(url)
         response = requests.get(url)
         response.raise_for_status()
+
         json_response = response.json()
+        print(json_response)
 
         documents = []
         for docno in json_response.get("docno", []):
