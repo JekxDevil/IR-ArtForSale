@@ -4,7 +4,8 @@ import pandas as pd
 
 
 def populate_database():
-    with open('../../crawler/saatchiart.json') as f:
+    print("POPULATING DB")
+    with open('../../../crawler/saatchiart.json') as f:
         data = json.load(f)
         df = pd.DataFrame(data)
         df['docno'] = [f'd{i + 1}' for i in range(len(df))]  # add docno column to doc entries
