@@ -1,6 +1,6 @@
 import json
 import os
-
+import pandas as pd
 from django.http import JsonResponse
 from ..models import Document
 import requests
@@ -11,6 +11,29 @@ def get_documents(request, query):
     # query = request.GET.get('query', '')
     print(f"QUERY ----------------> {query}")
     url = f"{IP}/search?query={query} art"
+
+    print("POPULATING DB")
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'saatchiresult.json')
+    with open(file_path) as f:
+        print(f)
+        data = json.load(f)
+        df = pd.DataFrame(data)
+        df['docno'] = [f'd{i + 1}' for i in range(len(df))]  # add docno column to doc entries
+        df.info()
+
+    # Loop through DataFrame rows and create Document objects
+    for index, row in df.iterrows():
+        new_doc = Document(
+            title=row['title'],
+            author=row['author'],
+            description=row['description'],
+            url=row['url'],
+            image=row['img'],
+            tags=row['tags'],
+            price=row['price'],
+            docno=row['docno'],
+        )
+        new_doc.save()
 
     try:
         print(url)
