@@ -23,7 +23,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("ArtForSale.urls")),
+    path("api/", include("ArtFinderSale.urls")),
 ]
 vue3_routes = []
 if settings.DEBUG:
