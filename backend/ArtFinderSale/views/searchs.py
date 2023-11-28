@@ -16,6 +16,7 @@ def get_documents(request, query):
     try:
         print(url)
         response = requests.get(url)
+        new_response = requests.post("http://localhost:8001/index/results")
         response.raise_for_status()
 
         json_response = response.json()

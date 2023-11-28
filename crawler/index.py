@@ -15,6 +15,7 @@ import pandas as pd
 import json
 import pyterrier as pt
 from fastapi import FastAPI
+import os
 from typing import Union
 
 
@@ -25,7 +26,7 @@ app = FastAPI()
 
 @app.get("/search")
 def search(query: str):
-    index = pt.IndexFactory.of('./index_saatchiart')
+    index = pt.IndexFactory.of('./index_total')
     tf_idf = pt.BatchRetrieve(index, wmodel="TF_IDF")
     output = tf_idf.search(query)
     return output.to_dict()
@@ -33,12 +34,18 @@ def search(query: str):
 @app.post("/index/{index_name}")
 def index(index_name: str):
     with open(index_name + '.json') as f:
+        print(index_name + ".json")
         data = json.load(f)
         df = pd.DataFrame(data)
         df['docno'] = [f'd{i + 1}' for i in range(len(df))]     # add docno column to doc entries
+        result_json = df.to_json(orient = 'records')
+        print(result_json)
+        output_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'final_result.json')
+        with open(output_file_path, 'w') as output_file:
+            output_file.write(result_json)
         df.info()
-        pd_indexer = pt.DFIndexer('./index_saatchiart', overwrite=True)
-        index_ref = pd_indexer.index(df['author'], df['title'], df['description'], df['docno'])     # TODO: add tags
+        pd_indexer = pt.DFIndexer('./index_total', overwrite=True)
+        index_ref = pd_indexer.index(df['author'], df['title'], df['description'], df['docno'], df['tags'])     # TODO: add tags
         index = pt.IndexFactory.of(index_ref)
         print('Index stats: ', index.getCollectionStatistics().toString())
         print('lexicon: ')
