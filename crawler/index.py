@@ -50,10 +50,10 @@ def index(index_name: str):
         data = json.load(f)
         df = pd.DataFrame(data)
         df['docno'] = [f'd{i + 1}' for i in range(len(df))]     # add docno column to doc entries
-        result_json = df.to_json(orient = 'records')
-        output_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'final_result.json')
-        with open(output_file_path, 'w') as output_file:
-            output_file.write(result_json)
+        # result_json = df.to_json(orient = 'records')
+        # output_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'final_result.json')
+        # with open(output_file_path, 'w') as output_file:
+        #     output_file.write(result_json)
         df.info()
         pd_indexer = pt.DFIndexer('./index_total', overwrite=True)
         index_ref = pd_indexer.index(df['author'], df['title'], df['description'], df['docno'])     # TODO: add tags
