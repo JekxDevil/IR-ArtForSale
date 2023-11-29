@@ -46,12 +46,12 @@
     <div class="results w-9 flex flex-column justify-content-between"
          style="border-top: solid 1px #FFD700">
       <div class="recomandations flex flex-column justiy-content-center align-items-center">
-        <h1>You might also like</h1>
-        <Carousel :value="retrievedArt" circular :num-scroll="1" :responsiveOptions="responsiveOptions" class="w-4 h-full"   :autoplayInterval="3000" >
+        <h1 v-if="suggestions.length != 0">You might also like</h1>
+        <Carousel :value="suggestions" circular :num-scroll="1" :responsiveOptions="responsiveOptions" class="w-4 h-full"   :autoplayInterval="3000" >
           <template #item="slotProps">
             <div class="border-1 surface-border border-round m-2 text-center py-5  px-3" style="height:600px">
               <div class="mb-3">
-                <img :src="slotProps.data.img" :alt="slotProps.data.title" class="w-full max-h-20rem border-round-top" style="object-fit:cover; object-position: center"/>
+                <img :src="slotProps.data.image" :alt="slotProps.data.title" class="w-full max-h-20rem border-round-top" style="object-fit:cover; object-position: center"/>
               </div>
               <div>
                 <h4 class="mb-1">{{ trimString(slotProps.data.title) }}</h4>
@@ -69,7 +69,7 @@
         <Card v-for="(item, index) in retrievedArt" :key="index" class="w-5 p-10 mt-8" style="box-shadow: 0px 0px 15px 12px #646464; ">
           <template #header>
             <img alt="user header"  style="object-fit:cover; object-position: center"
-                 class="w-full max-h-20rem border-round-top" :src="item.img" />
+                 class="w-full max-h-20rem border-round-top" :src="item.image" />
           </template>
           <template #title> {{item.title}} </template>
           <template #subtitle> {{item.author}}, {{item.price}} </template>
@@ -108,7 +108,7 @@ const min = ref(0)
 const max = ref(1000000000)
 const retrievedArt = ref([])
 const query = ref('');
-
+const suggestions = ref([])
 const responsiveOptions = ref([
   {
     breakpoint: '1400px',
@@ -132,66 +132,6 @@ const responsiveOptions = ref([
   }
 ]);
 
-onMounted(() => {
-  tags.value = ["Primo", "Secondo", "Terzo"];
-  retrievedArt.value = [
-    {
-      "img": "https://d3rf6j5nx5r04a.cloudfront.net/leW80a3WDJflb56jz-Y4ucl6vKg=/560x0/product/3/9/8a943a83da2d44818d44747ffcd904e9.jpg",
-      "author": "Vahe Yeremyan",
-      "title": "Abstract Painting Contemporary Original art on Plexiglass One of a kind Framed Ready to Hang Signed with Certificate of Authenticity",
-      "price": "£569.39",
-      "description": "ARTIST: Vahe Yeremyan",
-      "tags": ["primo", "secondo"],
-      "url": "https://www.artfinder.com/product/abstract-painting-contemporary-original-art-on-plexiglass-o-cb0c/"
-    },
-    {
-      "img": "https://d3rf6j5nx5r04a.cloudfront.net/lxL_ssd1iTSGdvG600WpLwDaIEA=/560x0/product/9/c/4b7a1ea01a09474099f64e2b2261f4e3_opt.jpg",
-      "author": "Adam Mazek",
-      "title": "Constructivism (from \"Ostensible abstraction\" set)",
-      "price": null,
-      "description": "\"Constructivism\" is the thirteenth photograph from \"Ostensible abstraction\" set.*",
-      "tags": ["primo", "secondo"],
-      "url": "https://www.artfinder.com/product/constructivism-from-ostensible-abstraction-set/"
-    },
-    {
-      "img": "https://d3rf6j5nx5r04a.cloudfront.net/GHmLHgxFNmDg0myd62KgZVRiZPw=/560x0/product/2/a/6ef987dcd9d04048bb0958fd5ba1aec8_opt.jpg",
-      "author": "Stephen Brook",
-      "title": "Cafe at Tate modern.",
-      "price": "£285",
-      "description": "Original oil painting of the cafeteria at London’s Tate modern with shaded lighting.",
-      "tags": ["primo", "secondo"],
-      "url": "https://www.artfinder.com/product/cafe-at-tate-modern-e1f3c/"
-    },
-    {
-      "img": "https://d3rf6j5nx5r04a.cloudfront.net/lyjZ95ziOtJv-d9UrbKl6V7zMcE=/560x0/product/4/1/ffc0daf3464a4bfa9c30db8dc1f34803_opt.jpg",
-      "author": "Lucy Moore",
-      "title": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
-      "price": "£1,200",
-      "description": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
-      "tags": ["primo", "secondo"],
-      "url": "https://www.artfinder.com/product/abstract-synapses-ive-never-heard-silence-quite-this-loud-2/"
-    },
-    {
-      "img": "https://d3rf6j5nx5r04a.cloudfront.net/lyjZ95ziOtJv-d9UrbKl6V7zMcE=/560x0/product/4/1/ffc0daf3464a4bfa9c30db8dc1f34803_opt.jpg",
-      "author": "Lucy Moore",
-      "title": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
-      "price": "£1,200",
-      "description": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
-      "tags": ["primo", "secondo"],
-      "url": "https://www.artfinder.com/product/abstract-synapses-ive-never-heard-silence-quite-this-loud-2/"
-    },
-    {
-      "img": "https://d3rf6j5nx5r04a.cloudfront.net/lyjZ95ziOtJv-d9UrbKl6V7zMcE=/560x0/product/4/1/ffc0daf3464a4bfa9c30db8dc1f34803_opt.jpg",
-      "author": "Lucy Moore",
-      "title": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
-      "price": "£1,200",
-      "description": "Abstract Synapses - I've Never Heard Silence Quite This Loud #2",
-      "tags": ["primo", "secondo"],
-      "url": "https://www.artfinder.com/product/abstract-synapses-ive-never-heard-silence-quite-this-loud-2/"
-    }
-  ];
-  console.log(retrievedArt)
-});
 
 const trimString = (input: string) => {
   if (input.length > 30) {
@@ -203,6 +143,11 @@ const trimString = (input: string) => {
 const mymethod = async (q: string) => {
   const documentStore = useDocumentStore();
   await documentStore.getDocuments(q);
+  retrievedArt.value = documentStore.documents
+  await documentStore.getDocuments(retrievedArt.value[1]["tags"])
+  suggestions.value = documentStore.documents.slice(0, 10)
+  console.log("DOCS", documentStore.documents)
+  console.log("VALUES", retrievedArt.value)
 }
 
 defineComponent({

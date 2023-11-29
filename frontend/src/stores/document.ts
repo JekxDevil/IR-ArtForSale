@@ -5,6 +5,7 @@ export const useDocumentStore = defineStore({
     id: "documents",
     state: () => ({
         documents: [],
+        recomandations: [],
     }),
     getters: {
         hasFields: (state) => state.documents.length > 0,
@@ -15,6 +16,15 @@ export const useDocumentStore = defineStore({
                 const response = await axios.get(`http://localhost:8000/api/documents/get-documents/${query}/`);
                 console.log(response)
                 this.documents = response.data.documents;
+            } catch (error) {
+                console.error("Error fetching fields:", error);
+                throw error;
+            }
+        },
+        async getRecomended(query: array) {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/recomandation/get-recomended/${query}/`);
+                console.log(response)
             } catch (error) {
                 console.error("Error fetching fields:", error);
                 throw error;

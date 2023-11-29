@@ -44,6 +44,7 @@ def get_documents(request, query):
                 'docno': current_doc.docno,
                 'title': current_doc.title,
                 'description': current_doc.description,
+                'author': current_doc.author,
                 'url': current_doc.url,
                 'image': current_doc.image,
                 'tags': current_doc.tags,
@@ -53,3 +54,20 @@ def get_documents(request, query):
         return JsonResponse({"documents": documents})
     except requests.exceptions.RequestException as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+def get_recommended(request, query):
+    answers = []
+    for tag in query:
+        IP = "http://localhost:8001"
+        # query = request.GET.get('query', '')
+        url = f"{IP}/search?query={tag} art"
+        response = requests.get(url)
+        response.raise_for_status()
+        answers.append(response.json())
+
+    results = []
+    for i in range(1, 10):
+        results.append(answers[i])
+
+    print(results)
