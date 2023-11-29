@@ -13,6 +13,7 @@ export const useDocumentStore = defineStore({
         async getDocuments(query: string) {
             try {
                 const response = await axios.get(`http://localhost:8000/api/documents/get-documents/${query}/`);
+                console.log(response)
                 this.documents = response.data.documents;
             } catch (error) {
                 console.error("Error fetching fields:", error);

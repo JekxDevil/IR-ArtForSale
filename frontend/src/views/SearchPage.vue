@@ -202,8 +202,7 @@ const trimString = (input: string) => {
 
 const mymethod = async (q: string) => {
   const documentStore = useDocumentStore();
-  const res = await documentStore.getDocuments(q);
-  console.log({res});
+  await documentStore.getDocuments(q);
 }
 
 defineComponent({

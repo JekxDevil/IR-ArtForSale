@@ -16,13 +16,25 @@ import json
 import pyterrier as pt
 from fastapi import FastAPI
 import os
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Union
 
 
 if not pt.started():
     pt.init()
 app = FastAPI()
+origins = [
+    "http://localhost:5173",
+    "http://localhost:8000",
+]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/search")
 def search(query: str):
@@ -39,13 +51,12 @@ def index(index_name: str):
         df = pd.DataFrame(data)
         df['docno'] = [f'd{i + 1}' for i in range(len(df))]     # add docno column to doc entries
         result_json = df.to_json(orient = 'records')
-        print(result_json)
         output_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'final_result.json')
         with open(output_file_path, 'w') as output_file:
             output_file.write(result_json)
         df.info()
         pd_indexer = pt.DFIndexer('./index_total', overwrite=True)
-        index_ref = pd_indexer.index(df['author'], df['title'], df['description'], df['docno'], df['tags'])     # TODO: add tags
+        index_ref = pd_indexer.index(df['author'], df['title'], df['description'], df['docno'])     # TODO: add tags
         index = pt.IndexFactory.of(index_ref)
         print('Index stats: ', index.getCollectionStatistics().toString())
         print('lexicon: ')
