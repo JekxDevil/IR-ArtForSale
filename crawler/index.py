@@ -39,7 +39,7 @@ app.add_middleware(
 @app.get("/search")
 def search(query: str):
     index = pt.IndexFactory.of('./index_total')
-    tf_idf = pt.BatchRetrieve(index, wmodel="TF_IDF")
+    tf_idf = pt.BatchRetrieve(index, wmodel="BM25")
     output = tf_idf.search(query)
     return output.to_dict()
 

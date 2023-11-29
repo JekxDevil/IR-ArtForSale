@@ -10,7 +10,7 @@ def get_documents(request, query):
     IP = "http://localhost:8001"
     # query = request.GET.get('query', '')
     print(f"QUERY ----------------> {query}")
-    url = f"{IP}/search?query={query} art"
+    url = f"{IP}/search?query={query}"
 
     try:
         print(url)
