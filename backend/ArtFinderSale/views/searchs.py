@@ -12,32 +12,44 @@ def get_documents(request, query):
     print(f"QUERY ----------------> {query}")
     url = f"{IP}/search?query={query} art"
 
-
     try:
         print(url)
         response = requests.get(url)
-        new_response = requests.post("http://localhost:8001/index/results")
         response.raise_for_status()
+        # with open('ArtFinderSale/views/final_result.json', 'r') as json_file:
+        #     data = json.load(json_file)
+        #
+        # # Assuming the JSON structure is a list of dictionaries
+        # for row in data:
+        #
+        #     new_document = Document(
+        #         image=row['img'],
+        #         author=row['author'],
+        #         title=row['title'],
+        #         description=row['description'],
+        #         price=row['price'],
+        #         tags=row['tags'],
+        #         url=row['url'],
+        #         docno = row['docno']
+        #     )
+        #     new_document.save()
 
         json_response = response.json()
-        print(json_response)
+
 
         documents = []
-        for docno in json_response.get("docno", []):
-            try:
-                current_doc = Document.objects.get(docno=docno)
-                documents.append({
-                    'docno': current_doc.docno,
-                    'title': current_doc.title,
-                    'description': current_doc.description,
-                    'url': current_doc.url,
-                    'image': current_doc.image,
-                    'tags': current_doc.tags,
-                    'price': current_doc.price,
-                })
-            except Document.DoesNotExist:
-                pass
-
+        for docno in json_response["docno"].values():
+            current_doc = Document.objects.get(docno=docno)
+            documents.append({
+                'docno': current_doc.docno,
+                'title': current_doc.title,
+                'description': current_doc.description,
+                'url': current_doc.url,
+                'image': current_doc.image,
+                'tags': current_doc.tags,
+                'price': current_doc.price,
+            })
+        print(documents)
         return JsonResponse({"documents": documents})
     except requests.exceptions.RequestException as e:
         return JsonResponse({'error': str(e)}, status=500)
