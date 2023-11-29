@@ -43,6 +43,40 @@
         </div>
       </div>
     </div>
+    <div class="advancedSearch w-9 flex align-items-center flex-column justify-content-center">
+      <h1 v-if="suggestions.length != 0">Filters</h1>
+      <div class="flex flex-row w-full justify-content-evenly p-5">
+        <div class="flex flex-column w-20rem">
+          <label>Origin</label>
+          <span class="p-input-icon-left">
+          <i class="pi pi-search"/>
+          <MultiSelect v-model="selectedSites" :options="sites" :maxSelectedLabels="2" display="chip"
+                       placeholder="Selected Tags" class="w-full"></MultiSelect>
+        </span>
+        </div>
+        <div class="flex flex-column w-20rem">
+          <label>Tags</label>
+          <span>
+          <MultiSelect v-model="selectedTags" :options="tags" :maxSelectedLabels="2" display="chip"
+                       placeholder="Selected Tags" class="w-full"></MultiSelect>
+        </span>
+        </div>
+
+      </div>
+      <div class="w-full flex flex-row w-full justify-content-evenly p-5">
+        <div class="flex flex-column w-20rem">
+          <label>Minimum Price</label>
+          <InputNumber v-model="min" inputId="horizontal-buttons" buttonLayout="horizontal" mode="decimal" showButtons
+                       :min="0" :max="100000000" decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" :pt="{input: {class: 'w-1rem'}}"/>
+        </div>
+        <div class="flex flex-column w-20rem">
+          <label>Maximum Price</label>
+          <InputNumber v-model="max" inputId="horizontal-buttons" buttonLayout="horizontal" mode="decimal" showButtons
+                       :min="0" :max="100000000" decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success" :pt="{input: {class: 'w-1rem'}}"/>
+        </div>
+      </div>
+      <Button label="Filter" @click="filterByPriceRange(min, max, selectedSites)"></Button>
+    </div>
     <div class="results w-9 flex flex-column justify-content-between"
          style="border-top: solid 1px #FFD700">
       <div class="recomandations flex flex-column justiy-content-center align-items-center">
@@ -56,7 +90,7 @@
               <div>
                 <h4 class="mb-1">{{ trimString(slotProps.data.title) }}</h4>
                 <p class="mt-0 mb-3">{{ slotProps.data.price }}</p>
-                <Tag v-for="(tag, index) in slotProps.data.tags" :key="index" :value="tag" class="p-1 ml-1" rounded></Tag>
+                <Tag v-for="(tag, index) in slotProps.data.tags" v-if="index < 5" :key="index" :value="tag" class="p-1 ml-1" rounded></Tag>
                 <div class="mt-5 flex align-items-center justify-content-center gap-2">
                   <a :href="slotProps.data.url" target="_blank"><Button icon="pi pi-check" label="Visit Page" :pt="{root: {style: 'bakcground-color: #0013de' }}"/></a>
                 </div>
@@ -66,7 +100,7 @@
         </Carousel>
       </div>
       <div class="cardsResult flex flex-column justiy-content-center align-items-center">
-        <Card v-for="(item, index) in retrievedArt" :key="index" class="w-5 p-10 mt-8" style="box-shadow: 0px 0px 15px 12px #646464; ">
+        <Card v-for="(item, index) in filteredValues" :key="index" class="w-5 p-10 mt-8" style="box-shadow: 0px 0px 15px 12px #646464; ">
           <template #header>
             <img alt="user header"  style="object-fit:cover; object-position: center"
                  class="w-full max-h-20rem border-round-top" :src="item.image" />
@@ -103,12 +137,15 @@ import Tag from 'primevue/tag';
 
 const checked = ref(false);
 const tags = ref([]);
+const sites = ref(["Artsy", "Saatchi", "ArtFinder"])
+const selectedSites = ref([])
 const selectedTags = ref([]);
 const min = ref(0)
 const max = ref(1000000000)
 const retrievedArt = ref([])
 const query = ref('');
 const suggestions = ref([])
+const filteredValues = ref([])
 const responsiveOptions = ref([
   {
     breakpoint: '1400px',
@@ -144,11 +181,35 @@ const mymethod = async (q: string) => {
   const documentStore = useDocumentStore();
   await documentStore.getDocuments(q);
   retrievedArt.value = documentStore.documents
+  filteredValues.value = documentStore.documents
   await documentStore.getDocuments(retrievedArt.value[1]["tags"])
   suggestions.value = documentStore.documents.slice(0, 10)
   console.log("DOCS", documentStore.documents)
   console.log("VALUES", retrievedArt.value)
 }
+
+const filterByPriceRange = (minPrice, maxPrice, siteToFilter) => {
+  console.log("SITES", siteToFilter);
+  console.log("selected", selectedSites)
+
+  const filteredResults = retrievedArt.value.filter(item => {
+    if (item.price !== null && item.price !== undefined) {
+      const numericPrice = parseFloat(item.price.replace(/[^0-9.]/g, ''));
+      const priceInRange = numericPrice >= minPrice && numericPrice <= maxPrice;
+      console.log(item.url)
+      let siteInUrl = true
+      if(siteToFilter.length != 0) {
+        siteInUrl = siteToFilter.some(word => item.url.includes(word.toLowerCase()));
+      }
+
+
+      return priceInRange && siteInUrl;
+    }
+    return false;
+  });
+  console.log(filteredResults)
+  filteredValues.value = filteredResults
+};
 
 defineComponent({
   name: 'SearchPage',
