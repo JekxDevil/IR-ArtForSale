@@ -24,7 +24,7 @@
         <div>
 
           <span class="p-float-label">
-          <MultiSelect v-model="selectedTags" :options="tags" :maxSelectedLabels="2" display="chip"
+          <MultiSelect v-model="selectedTags" :options="tags" :selectionLimit="1" :maxSelectedLabels="2" display="chip"
                        placeholder="Selected Tags" class="w-full"></MultiSelect>
             <label>Tags</label>
         </span>
@@ -45,7 +45,7 @@
           <label>Maximum Price</label>
             </span>
         </div>
-        <Button label="Filter" @click="filterByPriceRange(min, max, selectedSites)"></Button>
+        <Button label="Filter" icon="pi pi-filter" @click="filterByPriceRange(min, max, selectedSites, selectedTags)"></Button>
       </div>
     </div>
     <div class="results w-9 flex flex-column justify-content-between"
@@ -116,7 +116,7 @@ const retrievedArt = ref([])
 const query = ref('');
 const suggestions = ref([])
 const filteredValues = ref([])
-
+const complete_tags = ref([])
 const responsiveOptions = ref([
   {
     breakpoint: '1400px',
@@ -173,11 +173,33 @@ const mymethod = async (q: string) => {
 const getAllTags = () => {
   let all_tags = [];
   for (const item of retrievedArt.value) {
-    all_tags = all_tags.concat(item.tags);
+    all_tags = all_tags.concat(item.tags.map((element) => {return element.toLowerCase()}));
   }
+  console.log(query)
+  const query_array = query.value.split(" ");
+  const cleaned_tags = all_tags.filter( function( el ) {
+    return !query_array.includes( el );
+  } );
+  complete_tags.value = findTop3Tag(cleaned_tags)
+  console.log(complete_tags)
   tags.value = all_tags.filter((value, index) => all_tags.indexOf(value) === index);
 };
-const filterByPriceRange = (minPrice, maxPrice, siteToFilter) => {
+const findTop3Tag = (arr)  =>{
+  const countMap = {};
+
+  arr.forEach(str => {
+    countMap[str] = (countMap[str] || 0) + 1;
+  });
+
+  const countArray = Object.entries(countMap).map(([key, value]) => ({ key, value }));
+
+  countArray.sort((a, b) => b.value - a.value);
+
+  return countArray.slice(0, 3).map(entry => entry.key);
+
+}
+
+const filterByPriceRange = (minPrice, maxPrice, siteToFilter, tagToFilter) => {
   console.log("SITES", siteToFilter);
   console.log("selected", selectedSites)
 
@@ -185,14 +207,19 @@ const filterByPriceRange = (minPrice, maxPrice, siteToFilter) => {
     if (item.price !== null && item.price !== undefined) {
       const numericPrice = parseFloat(item.price.replace(/[^0-9.]/g, ''));
       const priceInRange = numericPrice >= minPrice && numericPrice <= maxPrice;
-      console.log(item.url)
       let siteInUrl = true
       if(siteToFilter.length != 0) {
         siteInUrl = siteToFilter.some(word => item.url.includes(word.toLowerCase()));
       }
+      console.log(tagToFilter)
+      let tagInArt = true
+      if(tagToFilter.length == 1) {
+        let item_tag = item.tags || [];
+        tagInArt = item_tag.includes(tagToFilter[0])
+      }
 
 
-      return priceInRange && siteInUrl;
+      return priceInRange && siteInUrl && tagInArt;
     }
     return false;
   });
