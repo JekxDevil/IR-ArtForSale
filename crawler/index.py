@@ -38,6 +38,7 @@ app.add_middleware(
 
 @app.get("/search")
 def search(query: str):
+    print(query)
     reverse_index = pt.IndexFactory.of('./index_total')
     tf_idf = pt.BatchRetrieve(reverse_index, wmodel="BM25")
     output = tf_idf.search(query)
