@@ -38,8 +38,8 @@ app.add_middleware(
 
 @app.get("/search")
 def search(query: str):
-    index = pt.IndexFactory.of('./index_total')
-    tf_idf = pt.BatchRetrieve(index, wmodel="BM25")
+    reverse_index = pt.IndexFactory.of('./index_total')
+    tf_idf = pt.BatchRetrieve(reverse_index, wmodel="BM25")
     output = tf_idf.search(query)
     return output.to_dict()
 
@@ -48,6 +48,11 @@ def index(index_name: str):
     with open(index_name + '.json') as f:
         print(index_name + ".json")
         data = json.load(f)
+        for d in data:
+            if 'tags' in d:
+                d['tags'] = ' '.join(d['tags'])
+            else:
+                d['tags'] = ''
         df = pd.DataFrame(data)
         df['docno'] = [f'd{i + 1}' for i in range(len(df))]     # add docno column to doc entries
         # result_json = df.to_json(orient = 'records')
@@ -56,7 +61,7 @@ def index(index_name: str):
         #     output_file.write(result_json)
         df.info()
         pd_indexer = pt.DFIndexer('./index_total', overwrite=True)
-        index_ref = pd_indexer.index(df['author'], df['title'], df['description'], df['docno'])     # TODO: add tags
+        index_ref = pd_indexer.index(df['author'], df['title'], df['tags'], df['description'], df['docno'])
         index = pt.IndexFactory.of(index_ref)
         print('Index stats: ', index.getCollectionStatistics().toString())
         print('lexicon: ')
