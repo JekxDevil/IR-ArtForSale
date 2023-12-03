@@ -40,7 +40,7 @@ app.add_middleware(
 def search(query: str):
     print(query)
     reverse_index = pt.IndexFactory.of('./index_total')
-    tf_idf = pt.BatchRetrieve(reverse_index, wmodel="BM25")
+    tf_idf = pt.BatchRetrieve(reverse_index, wmodel="TF_IDF")
     output = tf_idf.search(query)
     return output.to_dict()
 
@@ -52,6 +52,7 @@ def index(index_name: str):
         for d in data:
             if 'tags' in d:
                 d['tags'] = ' '.join(d['tags'])
+                d['blob'] = f"{d['title']} {d['author']} {d['tags']} {d['description']}"
             else:
                 d['tags'] = ''
         df = pd.DataFrame(data)
@@ -62,7 +63,7 @@ def index(index_name: str):
         #     output_file.write(result_json)
         df.info()
         pd_indexer = pt.DFIndexer('./index_total', overwrite=True)
-        index_ref = pd_indexer.index(df['author'], df['title'], df['tags'], df['description'], df['docno'])
+        index_ref = pd_indexer.index(df['blob'], df['docno'])
         index = pt.IndexFactory.of(index_ref)
         print('Index stats: ', index.getCollectionStatistics().toString())
         print('lexicon: ')
