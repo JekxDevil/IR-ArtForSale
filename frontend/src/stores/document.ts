@@ -21,10 +21,11 @@ export const useDocumentStore = defineStore({
                 throw error;
             }
         },
-        async getRecomended(query: array) {
+        async getRecomended(tags: array) {
             try {
-                const response = await axios.get(`http://localhost:8000/api/recomandation/get-recomended/${query}/`);
+                const response = await axios.get(`http://localhost:8000/api/recomandation/get-recomended/`,{params: tags});
                 console.log(response)
+                this.recomandations = response.data.recomandations;
             } catch (error) {
                 console.error("Error fetching fields:", error);
                 throw error;

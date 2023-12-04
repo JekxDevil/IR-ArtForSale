@@ -51,24 +51,31 @@
     <div class="results w-9 flex flex-column justify-content-between"
          style="border-top: solid 1px #FFD700">
       <div v-if="suggestions.length != 0" class="recomandations flex flex-column justiy-content-center align-items-center">
-        <h1>You might also like</h1>
-        <Carousel :value="suggestions" circular :num-scroll="1" :responsiveOptions="responsiveOptions" class="w-4 h-full"   :autoplayInterval="3000" >
-          <template #item="slotProps">
-            <div class="border-1 surface-border border-round m-2 text-center py-5  px-3" style="height:600px">
-              <div class="mb-3">
-                <img :src="slotProps.data.image" :alt="slotProps.data.title" class="w-full max-h-20rem border-round-top" style="object-fit:cover; object-position: center"/>
-              </div>
-              <div>
-                <h4 class="mb-1">{{ trimString(slotProps.data.title, 30) }}</h4>
-                <p class="mt-0 mb-3">{{ slotProps.data.price }}</p>
-                <Tag v-for="(tag, index) in slotProps.data.tags" v-if="index < 5" :key="index" :value="tag" class="p-1 ml-1" rounded></Tag>
-                <div class="mt-5 flex align-items-center justify-content-center gap-2">
-                  <a :href="slotProps.data.url" target="_blank"><Button icon="pi pi-check" label="Visit Page" :pt="{root: {style: 'bakcground-color: #0013de' }}"/></a>
+        <h1>Based on the tags of these paintings, you might also like</h1>
+        <div class="flex flex-row justify-content-center align-items-center">
+          <div v-for="(item, index) in suggestions" :key="index">
+            <div class="flex flex-column justify-content-center align-items-center" v-if="item.length != 0">
+              <h2>{{complete_tags[index]}}</h2>
+            <Carousel :value="spliceItem(item)" circular :num-scroll="1" :responsiveOptions="responsiveOptions" class="w-25rem h-full"   :autoplayInterval="3000" >
+              <template #item="slotProps">
+                <div class="border-1 surface-border border-round m-2 text-center py-5  px-3" style="height:500px">
+                  <div class="mb-3">
+                    <img :src="slotProps.data.image" :alt="slotProps.data.title" class="w-full max-h-20rem border-round-top" style="object-fit:cover; object-position: center; height:200px"/>
+                  </div>
+                  <div>
+                    <h4 class="mb-1">{{ trimString(slotProps.data.title, 30) }}</h4>
+                    <p class="mt-0 mb-3">{{ slotProps.data.price }}</p>
+                    <Tag v-for="(tag, index) in trimTags(slotProps.data.tags)" v-if="index < 5" :key="index" :value="tag" class="p-1 ml-1" rounded></Tag>
+                    <div class="mt-5 flex align-items-center justify-content-center gap-2">
+                      <a :href="slotProps.data.url" target="_blank"><Button icon="pi pi-check" label="Visit Page" :pt="{root: {style: 'bakcground-color: #0013de' }}"/></a>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </template>
+            </Carousel>
             </div>
-          </template>
-        </Carousel>
+          </div>
+        </div>
       </div>
       <div class="cardsResult flex flex-row flex-wrap justify-content-center align-items-center gap-5">
         <Card v-for="(item, index) in filteredValues" :key="index" class="w-3 p-10 mt-8" style="box-shadow: 0px 0px 15px 12px #646464; height: 600px ">
@@ -164,8 +171,10 @@ const mymethod = async (q: string) => {
   retrievedArt.value = documentStore.documents
   filteredValues.value = documentStore.documents
   getAllTags()
-  console.log("TAGS", tags)
-  suggestions.value = documentStore.documents.slice(0, 10)
+
+  await documentStore.getRecomended({tags: complete_tags.value})
+  suggestions.value = documentStore.recomandations
+  console.log("SUGG", suggestions.value)
   console.log("DOCS", documentStore.documents)
   console.log("VALUES", retrievedArt.value)
 }
@@ -173,7 +182,10 @@ const mymethod = async (q: string) => {
 const getAllTags = () => {
   let all_tags = [];
   for (const item of retrievedArt.value) {
-    all_tags = all_tags.concat(item.tags.map((element) => {return element.toLowerCase()}));
+    if(item.tags !== null && item.tags !== undefined) {
+      all_tags = all_tags.concat(item.tags.map((element) => {return element.toLowerCase()}));
+    }
+
   }
   console.log(query)
   const query_array = query.value.split(" ");
@@ -181,9 +193,16 @@ const getAllTags = () => {
     return !query_array.includes( el );
   } );
   complete_tags.value = findTop3Tag(cleaned_tags)
-  console.log(complete_tags)
   tags.value = all_tags.filter((value, index) => all_tags.indexOf(value) === index);
 };
+
+const spliceItem = (arr) => {
+  if(arr.length > 5) {
+    console.log("ECCOMI")
+    return arr.slice(0, 5)
+  }
+  return arr
+}
 const findTop3Tag = (arr)  =>{
   const countMap = {};
 
@@ -195,7 +214,7 @@ const findTop3Tag = (arr)  =>{
 
   countArray.sort((a, b) => b.value - a.value);
 
-  return countArray.slice(0, 3).map(entry => entry.key);
+  return countArray.slice(0, 5).map(entry => entry.key);
 
 }
 

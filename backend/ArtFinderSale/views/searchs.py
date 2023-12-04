@@ -50,24 +50,34 @@ def get_documents(request, query):
                 'tags': current_doc.tags,
                 'price': current_doc.price,
             })
-        print(documents)
         return JsonResponse({"documents": documents})
     except requests.exceptions.RequestException as e:
         return JsonResponse({'error': str(e)}, status=500)
 
 
-def get_recommended(request, query):
-    answers = []
-    for tag in query:
-        IP = "http://localhost:8001"
-        # query = request.GET.get('query', '')
-        url = f"{IP}/search?query={tag} art"
+def get_recommended(self):
+    tags = self.GET.getlist("tags[]")
+    print(tags)
+    IP = "http://localhost:8001"
+    recomended = []
+    for tag in tags:
+        documents = []
+        url = f"{IP}/search?query={tag}"
         response = requests.get(url)
         response.raise_for_status()
-        answers.append(response.json())
-
-    results = []
-    for i in range(1, 10):
-        results.append(answers[i])
-
-    print(results)
+        json_response = response.json()
+        for docno in json_response["docno"].values():
+            current_doc = Document.objects.get(docno=docno)
+            documents.append({
+                'docno': current_doc.docno,
+                'title': current_doc.title,
+                'description': current_doc.description,
+                'author': current_doc.author,
+                'url': current_doc.url,
+                'image': current_doc.image,
+                'tags': current_doc.tags,
+                'price': current_doc.price,
+            })
+        recomended.append(documents)
+    print(len(recomended))
+    return JsonResponse({"recomandations": recomended})
