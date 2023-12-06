@@ -1,33 +1,6 @@
 <template>
   <div class="flex flex-column align-items-center justify-content-center">
     <h1 class="p-5 text-8xl">Art For Sale</h1>
-    <div v-if="suggestions.length != 0" class="recomandations flex flex-column justiy-content-center align-items-center">
-      <h1>Based on the tags of these paintings, you might also like</h1>
-      <div class="flex flex-row justify-content-center align-items-center">
-        <div v-for="(item, index) in suggestions" :key="index">
-          <div class="flex flex-column justify-content-center align-items-center" v-if="item.length != 0">
-            <h2>{{complete_tags[index]}}</h2>
-            <Carousel :value="spliceItem(item)" circular :num-scroll="1" :responsiveOptions="responsiveOptions" class="w-25rem h-full"   :autoplayInterval="3000" >
-              <template #item="slotProps">
-                <div class="border-1 surface-border border-round m-2 text-center py-5  px-3" style="height:500px">
-                  <div class="mb-3">
-                    <img :src="slotProps.data.image" :alt="slotProps.data.title" class="w-full max-h-20rem border-round-top" style="object-fit:cover; object-position: center; height:200px"/>
-                  </div>
-                  <div>
-                    <h4 class="mb-1">{{ trimString(slotProps.data.title, 30) }}</h4>
-                    <p class="mt-0 mb-3">{{ slotProps.data.price }}</p>
-                    <Tag v-for="(tag, index) in trimTags(slotProps.data.tags)" v-if="index < 5" :key="index" :value="trimString(tag, 10)" class="p-1 ml-1" rounded></Tag>
-                    <div class="mt-5 flex align-items-center justify-content-center gap-2">
-                      <a :href="slotProps.data.url" target="_blank"><Button icon="pi pi-check" label="Visit Page" :pt="{root: {style: 'bakcground-color: #0013de' }}"/></a>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </Carousel>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="w-9 flex text-align-left justify-content-end p-2">
     </div>
     <div class="flex flex-column justify-content-center w-full align-items-center">
@@ -75,6 +48,37 @@
         <Button label="Filter" icon="pi pi-filter" @click="filterByPriceRange(min, max, selectedSites, selectedTags)"></Button>
       </div>
     </div>
+    <div class="card flex justify-content-center">
+      <Sidebar v-model:visible="visibleBar" position="right" class="w-auto">
+        <div class="flex flex-column justify-content-center align-items-center">
+          <h1>Based on the tags of these paintings</h1>
+          <h1>You might also like</h1>
+          <div v-for="(item, index) in suggestions" :key="index">
+            <div class="flex flex-column justify-content-center align-items-center" v-if="item.length != 0">
+              <h2>{{complete_tags[index]}}</h2>
+              <Carousel :value="spliceItem(item)" circular :num-scroll="1" :responsiveOptions="responsiveOptions" class="w-25rem h-full"   :autoplayInterval="3000" >
+                <template #item="slotProps">
+                  <div class="border-1 surface-border border-round m-2 text-center py-5  px-3" style="height:500px">
+                    <div class="mb-3">
+                      <img :src="slotProps.data.image" :alt="slotProps.data.title" class="w-full max-h-20rem border-round-top" style="object-fit:cover; object-position: center; height:200px"/>
+                    </div>
+                    <div>
+                      <h4 class="mb-1">{{ trimString(slotProps.data.title, 30) }}</h4>
+                      <p class="mt-0 mb-3">{{ slotProps.data.price }}</p>
+                      <Tag v-for="(tag, index) in trimTags(slotProps.data.tags)" v-if="index < 5" :key="index" :value="trimString(tag, 10)" class="p-1 ml-1" rounded></Tag>
+                      <div class="mt-5 flex align-items-center justify-content-center gap-2">
+                        <a :href="slotProps.data.url" target="_blank"><Button icon="pi pi-check" label="Visit Page" :pt="{root: {style: 'bakcground-color: #0013de' }}"/></a>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </Carousel>
+            </div>
+          </div>
+        </div>
+      </Sidebar>
+      <Button icon="pi pi-arrow-right" label="See some recommendation"  v-if="filteredValues.length != 0" class="mt-2 mb-2" @click="visibleBar = true" />
+    </div>
     <div class="results w-9 flex flex-column justify-content-between"
          style="border-top: solid 1px #FFD700">
       <div class="cardsResult flex flex-row flex-wrap justify-content-center align-items-center gap-5">
@@ -119,6 +123,7 @@ import Card from "primevue/card"
 import Carousel from "primevue/carousel"
 import Tag from 'primevue/tag';
 import Dialog from "primevue/dialog";
+import Sidebar from "primevue/sidebar";
 
 const tags = ref([]);
 const sites = ref(["Artsy", "Saatchi", "ArtFinder"])
@@ -133,6 +138,7 @@ const filteredValues = ref([])
 const complete_tags = ref([])
 const filterVisible = ref(false)
 const visible = ref(false)
+const visibleBar = ref(false)
 const responsiveOptions = ref([
   {
     breakpoint: '1400px',
