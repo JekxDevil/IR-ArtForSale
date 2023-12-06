@@ -1,6 +1,33 @@
 <template>
   <div class="flex flex-column align-items-center justify-content-center">
     <h1 class="p-5 text-8xl">Art For Sale</h1>
+    <div v-if="suggestions.length != 0" class="recomandations flex flex-column justiy-content-center align-items-center">
+      <h1>Based on the tags of these paintings, you might also like</h1>
+      <div class="flex flex-row justify-content-center align-items-center">
+        <div v-for="(item, index) in suggestions" :key="index">
+          <div class="flex flex-column justify-content-center align-items-center" v-if="item.length != 0">
+            <h2>{{complete_tags[index]}}</h2>
+            <Carousel :value="spliceItem(item)" circular :num-scroll="1" :responsiveOptions="responsiveOptions" class="w-25rem h-full"   :autoplayInterval="3000" >
+              <template #item="slotProps">
+                <div class="border-1 surface-border border-round m-2 text-center py-5  px-3" style="height:500px">
+                  <div class="mb-3">
+                    <img :src="slotProps.data.image" :alt="slotProps.data.title" class="w-full max-h-20rem border-round-top" style="object-fit:cover; object-position: center; height:200px"/>
+                  </div>
+                  <div>
+                    <h4 class="mb-1">{{ trimString(slotProps.data.title, 30) }}</h4>
+                    <p class="mt-0 mb-3">{{ slotProps.data.price }}</p>
+                    <Tag v-for="(tag, index) in trimTags(slotProps.data.tags)" v-if="index < 5" :key="index" :value="trimString(tag, 10)" class="p-1 ml-1" rounded></Tag>
+                    <div class="mt-5 flex align-items-center justify-content-center gap-2">
+                      <a :href="slotProps.data.url" target="_blank"><Button icon="pi pi-check" label="Visit Page" :pt="{root: {style: 'bakcground-color: #0013de' }}"/></a>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </Carousel>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="w-9 flex text-align-left justify-content-end p-2">
     </div>
     <div class="flex flex-column justify-content-center w-full align-items-center">
@@ -10,7 +37,7 @@
         <Button label="Search" class="mt-4 mb-4"  id="searchButton" rounded @click="mymethod(query)" @keyup.enter="mymethod(query)"></Button>
     </span>
     </div>
-    <div class="advancedSearch w-9 flex align-items-start flex-column justify-content-start">
+    <div class="advancedSearch w-9 flex align-items-start flex-column justify-content-start" v-if="filterVisible">
       <h4>Filters</h4>
       <div class="flex flex-row w-full justify-content-start gap-2 pb-2">
         <div>
@@ -18,7 +45,7 @@
           <span class="p-float-label">
           <MultiSelect v-model="selectedSites" :options="sites" :maxSelectedLabels="2" display="chip"
                        placeholder="Selected Tags" class="w-full"></MultiSelect>
-            <label>Origin</label>
+            <label>Site of origin</label>
         </span>
         </div>
         <div>
@@ -50,33 +77,6 @@
     </div>
     <div class="results w-9 flex flex-column justify-content-between"
          style="border-top: solid 1px #FFD700">
-      <div v-if="suggestions.length != 0" class="recomandations flex flex-column justiy-content-center align-items-center">
-        <h1>Based on the tags of these paintings, you might also like</h1>
-        <div class="flex flex-row justify-content-center align-items-center">
-          <div v-for="(item, index) in suggestions" :key="index">
-            <div class="flex flex-column justify-content-center align-items-center" v-if="item.length != 0">
-              <h2>{{complete_tags[index]}}</h2>
-            <Carousel :value="spliceItem(item)" circular :num-scroll="1" :responsiveOptions="responsiveOptions" class="w-25rem h-full"   :autoplayInterval="3000" >
-              <template #item="slotProps">
-                <div class="border-1 surface-border border-round m-2 text-center py-5  px-3" style="height:500px">
-                  <div class="mb-3">
-                    <img :src="slotProps.data.image" :alt="slotProps.data.title" class="w-full max-h-20rem border-round-top" style="object-fit:cover; object-position: center; height:200px"/>
-                  </div>
-                  <div>
-                    <h4 class="mb-1">{{ trimString(slotProps.data.title, 30) }}</h4>
-                    <p class="mt-0 mb-3">{{ slotProps.data.price }}</p>
-                    <Tag v-for="(tag, index) in trimTags(slotProps.data.tags)" v-if="index < 5" :key="index" :value="tag" class="p-1 ml-1" rounded></Tag>
-                    <div class="mt-5 flex align-items-center justify-content-center gap-2">
-                      <a :href="slotProps.data.url" target="_blank"><Button icon="pi pi-check" label="Visit Page" :pt="{root: {style: 'bakcground-color: #0013de' }}"/></a>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </Carousel>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="cardsResult flex flex-row flex-wrap justify-content-center align-items-center gap-5">
         <Card v-for="(item, index) in filteredValues" :key="index" class="w-3 p-10 mt-8" style="box-shadow: 0px 0px 15px 12px #646464; height: 600px ">
           <template #header>
@@ -97,7 +97,13 @@
           </template>
         </Card>
       </div>
-
+      <Dialog v-model:visible="visible" modal header="Error" :style="{ width: '50rem' }" class="flex flex-column  justify-content-center" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
+        <p class="text-2xl flex justify-content-center flex-column text-align-center">
+          Your query:<br>
+          <p><b>{{query}}</b></p>
+          <p>Has given no results</p>
+        </p>
+      </Dialog>
     </div>
   </div>
 </template>
@@ -112,6 +118,7 @@ import Button from "primevue/button"
 import Card from "primevue/card"
 import Carousel from "primevue/carousel"
 import Tag from 'primevue/tag';
+import Dialog from "primevue/dialog";
 
 const tags = ref([]);
 const sites = ref(["Artsy", "Saatchi", "ArtFinder"])
@@ -124,6 +131,8 @@ const query = ref('');
 const suggestions = ref([])
 const filteredValues = ref([])
 const complete_tags = ref([])
+const filterVisible = ref(false)
+const visible = ref(false)
 const responsiveOptions = ref([
   {
     breakpoint: '1400px',
@@ -157,6 +166,9 @@ const trimString = (desc, qt) => {
 }
 
 const trimTags = (desc) => {
+  if(desc == null) {
+    return ""
+  }
   if(desc.length > 5) {
     return desc.slice(0, 5)
   }
@@ -169,14 +181,21 @@ const mymethod = async (q: string) => {
   const documentStore = useDocumentStore();
   await documentStore.getDocuments(q);
   retrievedArt.value = documentStore.documents
+  console.log(retrievedArt)
+  if(retrievedArt.value.length == 0) {
+    console.log("TEL CHI")
+    visible.value = true
+    console.log("VI",visible)
+  }
   filteredValues.value = documentStore.documents
+  min.value = 0
+  max.value = 1000000
+  selectedSites.value = []
+  selectedTags.value = []
   getAllTags()
-
+  filterVisible.value = true
   await documentStore.getRecomended({tags: complete_tags.value})
   suggestions.value = documentStore.recomandations
-  console.log("SUGG", suggestions.value)
-  console.log("DOCS", documentStore.documents)
-  console.log("VALUES", retrievedArt.value)
 }
 
 const getAllTags = () => {
@@ -221,16 +240,19 @@ const findTop3Tag = (arr)  =>{
 const filterByPriceRange = (minPrice, maxPrice, siteToFilter, tagToFilter) => {
   console.log("SITES", siteToFilter);
   console.log("selected", selectedSites)
+  if(!Array.isArray(siteToFilter)) {
+    siteToFilter = []
+  }
 
   const filteredResults = retrievedArt.value.filter(item => {
     if (item.price !== null && item.price !== undefined) {
       const numericPrice = parseFloat(item.price.replace(/[^0-9.]/g, ''));
       const priceInRange = numericPrice >= minPrice && numericPrice <= maxPrice;
       let siteInUrl = true
+      console.log(siteToFilter)
       if(siteToFilter.length != 0) {
         siteInUrl = siteToFilter.some(word => item.url.includes(word.toLowerCase()));
       }
-      console.log(tagToFilter)
       let tagInArt = true
       if(tagToFilter.length == 1) {
         let item_tag = item.tags || [];
@@ -242,7 +264,7 @@ const filterByPriceRange = (minPrice, maxPrice, siteToFilter, tagToFilter) => {
     }
     return false;
   });
-  console.log(filteredResults)
+  console.log("FILTERED", filteredResults)
   filteredValues.value = filteredResults
 };
 
