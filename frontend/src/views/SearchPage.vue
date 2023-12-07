@@ -6,11 +6,11 @@
     <div class="flex flex-column justify-content-center w-full align-items-center">
       <span class="p-input-icon-left w-9 flex align-items-center flex-row justify-content-center">
             <i class="pi pi-search"/>
-            <InputText placeholder="Search" v-model="query" class="w-full"/>
+            <InputText placeholder="Search" id="searchBar" v-model="query" class="w-full"/>
         <Button label="Search" class="mt-4 mb-4"  id="searchButton" rounded @click="mymethod(query)" @keyup.enter="mymethod(query)"></Button>
     </span>
     </div>
-    <div class="advancedSearch w-9 flex align-items-start flex-column justify-content-start" v-if="filterVisible">
+    <div class="advancedSearch w-9 flex align-items-start flex-column justify-content-start" v-if="filterVisible && !visibleSpinner">
       <h4>Filters</h4>
       <div class="flex flex-row w-full justify-content-start gap-2 pb-2">
         <div>
@@ -49,8 +49,12 @@
       </div>
     </div>
     <div class="flex flex-row align-items-start justify-content-center" style="border-top: solid 1px #FFD700">
-    <div class="results w-9 flex flex-column justify-content-between"
-         >
+      <div class="card flex justify-content-center">
+        <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="var(--surface-ground)"
+                         animationDuration=".5s" aria-label="Custom ProgressSpinner" v-if="visibleSpinner"/>
+      </div>
+    <div class="results flex flex-column justify-content-between" style="width:90rem"
+         v-if="!visibleSpinner">
       <div class="cardsResult flex flex-row flex-wrap justify-content-center align-items-center gap-5">
         <Card v-for="(item, index) in filteredValues" :key="index" class="w-3 p-10 mt-8" style="box-shadow: 0px 0px 15px 12px #646464; height: 600px ">
           <template #header>
@@ -79,7 +83,7 @@
         </p>
       </Dialog>
     </div>
-      <div class="flex flex-column justify-content-center align-items-center flex-wrap" v-if="suggestions.length != 0">
+      <div class="flex flex-column justify-content-center align-items-center flex-wrap" v-if="suggestions.length != 0 && !visibleSpinner">
         <h3>Based on these tags, you might also like</h3>
         <div v-for="(item, index) in suggestions" :key="index">
           <div class="flex flex-column justify-content-center align-items-center" v-if="item.length != 0">
@@ -111,7 +115,6 @@
 import {defineComponent, ref, onMounted} from 'vue';
 import {useDocumentStore} from '@/stores/document';
 import InputText from "primevue/inputtext";
-import InputSwitch from "primevue/inputswitch";
 import MultiSelect from "primevue/multiselect";
 import InputNumber from "primevue/inputnumber"
 import Button from "primevue/button"
@@ -119,7 +122,7 @@ import Card from "primevue/card"
 import Carousel from "primevue/carousel"
 import Tag from 'primevue/tag';
 import Dialog from "primevue/dialog";
-import Sidebar from "primevue/sidebar";
+import ProgressSpinner from "primevue/progressspinner";
 
 const tags = ref([]);
 const sites = ref(["Artsy", "Saatchi", "ArtFinder"])
@@ -134,7 +137,7 @@ const filteredValues = ref([])
 const complete_tags = ref([])
 const filterVisible = ref(false)
 const visible = ref(false)
-const visibleBar = ref(false)
+const visibleSpinner = ref(false)
 const responsiveOptions = ref([
   {
     breakpoint: '1400px',
@@ -161,7 +164,7 @@ const responsiveOptions = ref([
 
 onMounted(() => {
   console.log(document.getElementById('searchButton'))
-  document.getElementById('mainContainer').addEventListener('keydown', function (e) {
+  document.getElementById('searchBar').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       mymethod(query.value);
     }
@@ -188,6 +191,7 @@ const trimTags = (desc) => {
 
 
 const mymethod = async (q: string) => {
+  visibleSpinner.value = true
   const documentStore = useDocumentStore();
   await documentStore.getDocuments(q);
   retrievedArt.value = documentStore.documents
@@ -204,6 +208,7 @@ const mymethod = async (q: string) => {
   filterVisible.value = true
   await documentStore.getRecomended({tags: complete_tags.value})
   suggestions.value = documentStore.recomandations
+  visibleSpinner.value = false
 }
 
 const getAllTags = () => {
