@@ -1,0 +1,64 @@
+\documentclass[12pt]{spieman}  % 12pt font required by SPIE;
+%\documentclass[a4paper,12pt]{spieman}  % use this instead forA4 paper
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{tocloft}
+
+\title{Information Retrieval - Report - Project: Art For Sale}
+
+\author{Morales Mariciano Jeferson}
+\author{Piloni Filippo}
+\affil{Universita' della Svizzera italiana, Faculty of Informatics, Lugano, Switzerland}
+
+\renewcommand{\cftdotsep}{\cftnodots}
+\cftpagenumbersoff{figure}
+\cftpagenumbersoff{table} 
+\thispagestyle{empty}
+
+\begin{document}
+\maketitle
+
+\begin{spacing}{1}   % use double spacing for rest of manuscript
+
+    \section{Obtained results}
+    Github code repository: \url{https://github.com/JekxDevil/IR-ArtForSale}\\
+    For the \textit{Art-For-Sale} project we selected the following websites to collect the data from:
+    \begin{itemize}
+        \setlength\itemsep{0.3em}
+        \item [1.] \url{www.artsy.net}
+        \item [2.] \url{www.saatchiart.com}
+        \item [3.] \url{www.artfinder.com}
+    \end{itemize}
+    For each website, a spider to crawl the site was created.
+    Website specific pre-fixed tags have been used to choose categories to explore,
+    searching content for each of the tag and retrieve categorized grouped results. \\
+    The crawler explores the pages of the single artworks and gathers from each one the following information:
+    \begin{itemize}
+        \setlength\itemsep{0.3em}
+        \item Name of the artwork and author
+        \item Url of the image of the artwork
+        \item Price
+        \item Link to the page
+        \item Tags associated to the artwork
+        \item Description of the artwork (if present)
+    \end{itemize}
+    Results are saved in json files and we are starting the creation of an inverted index combining all the results obtained.\\
+    In total, we obtained around $\approx9000$ documents to be used in our project\\
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \vspace*{-0.5cm}\section{Planned results}
+    The next step will be implementing the \textbf{inverted index} and the \textbf{frontend} and \textbf{backend} part.\\
+    For the inverse index, documents are indexed based on all the text information, providing a quick access based on
+    tags, price and characteristics listed above.\\
+    We then decided to implement a simple yet highly customizable interface in Vuejs that will allow the user to filter the results
+    based on the tags associated to the artworks and showcase all the important information about the artworks obtained thanks to the retrieval model. \\
+    Our plan is to implement \underline{at least} the following features:
+    \begin{itemize}
+        \setlength\itemsep{0.3em}
+        \item Result presentation
+        \item Automatic recommendation
+    \end{itemize}
+    With these, it would be possible to accomplish our goal, so to create a retrieve system with a good interface
+    that returns results based on the user's search history.
+\end{spacing}
+\end{document}
