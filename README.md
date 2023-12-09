@@ -2,7 +2,7 @@
 Project for Information Retrieval course.
 
 Search engine to display for sale artworks. 
-Around 8.5~ documents indexed from art selling related [websites](#webpages), 
+Around 8,500k~ documents indexed from art selling related [websites](#webpages), 
 served in a [user-friendly](#user-evaluation) interface.
 
 ## Features

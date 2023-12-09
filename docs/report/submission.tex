@@ -5,6 +5,9 @@
 \usepackage{setspace}
 \usepackage{tocloft}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{wrapfig}
 \title{Information Retrieval - Submission Report \\Project N.14: Art For Sale}
 
 \author{Jeferson Morales Mariciano}
@@ -16,6 +19,10 @@
 \cftpagenumbersoff{table} 
 \begin{document}
 
+\begin{wrapfigure}{l}{0.25\textwidth}
+    \includegraphics[width=0.25\textwidth, trim={0cm 0cm 0cm 7cm}]{USI_logo.png}
+\end{wrapfigure}
+
 \maketitle
 \tableofcontents
 \newpage
@@ -26,7 +33,7 @@
     The Information Retrieval course project \textit{"ArtForSale"} aims to be a working prototype of an information
     retrieval system for a specific task: to display for-sale artworks from art selling related websites
     listed in Section \ref{sec:websites}.
-    The system has around $\approx 8,500$ indexed documents served through a
+    The system has around $\approx 8,500$ indexed documents for searching, browsing and presented through a
     user-friendly and intuitive interface, further details in UI/UX Section \ref{sec:ui}, \ref{sec:ux}.
 
     \subsection{Websites}\label{sec:websites}
@@ -45,7 +52,7 @@
     in Crawler Section \ref{sec:crawling}.
 
     \subsection{Features}
-    For this project, the following features has been implemented:
+    For this project, the following features have been implemented:
     \begin{itemize}
         \item Result presentation
         \item Filtering
@@ -97,6 +104,7 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{User Evaluation}
+    System evaluation: Recall and precision paragraph
 
     \subsection{User Experience}\label{sec:ux}
 
