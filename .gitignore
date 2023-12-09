@@ -1,5 +1,14 @@
-.vscode
-.idea
-__pycache__
+.vscode/
+.idea/
+__pycache__/
 index/
-venv
+venv/
+
+# latex files
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc

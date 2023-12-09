@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{setspace}
 \usepackage{tocloft}
+\usepackage{hyperref}
 \title{Information Retrieval - Submission Report \\Project N.14: Art For Sale}
 
 \author{Jeferson Morales Mariciano}
@@ -14,14 +15,36 @@
 \cftpagenumbersoff{figure}
 \cftpagenumbersoff{table} 
 \begin{document}
+
 \maketitle
 \tableofcontents
+\newpage
 
 \begin{spacing}{1}   % use double spacing for rest of manuscript
 
-
     \section{Introduction}
-    ArtForSale aims to be a search engines aimed to display artworks from across various sites, offering to the user a friendly and intuitive interface.\newline
+    The Information Retrieval course project \textit{"ArtForSale"} aims to be a working prototype of an information
+    retrieval system for a specific task: to display for-sale artworks from art selling related websites
+    listed in Section \ref{sec:websites}.
+    The system has around $\approx 8,500$ indexed documents served through a
+    user-friendly and intuitive interface, further details in UI/UX Section \ref{sec:ui}, \ref{sec:ux}.
+
+    \subsection{Websites}\label{sec:websites}
+    The following websites were chosen for the project based on availability of data, ease of scraping and
+    low restrictions regarding policies and terms of use to scrape documents i.e. \textit{robots.txt} rules:
+
+    \begin{itemize}
+        \item \url{www.artsy.net}
+        \item \url{www.artfinder.com}
+        \item \url{www.saatchiart.com}
+    \end{itemize}
+
+    The total cumulative number of documents gathered from the above websites is $\approx 8,500$ stored in
+    \textit{results.json} file containing the list of documents in JSON format.
+    Further information concerning the scraping process and implementation is discussed
+    in Crawler Section \ref{sec:crawling}.
+
+    \subsection{Features}
     For this project, the following features has been implemented:
     \begin{itemize}
         \item Result presentation
@@ -29,9 +52,12 @@
         \item Automatic recommendation
     \end{itemize}
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Technologies Used}
+
     \subsection{Scrapy}
     Scrapy, a Python framework for web crawling and scraping, is utilized in to initiate the crawling/scraping process for a specified set of artworks. The extracted data is subsequently channeled into a .json file.
+
     \subsection{PyTerrier}
     PyTerrier is a Python library that provides a high-level interface for the Terrier information retrieval system. In the provided code snippet, PyTerrier is used for building an information retrieval system to search and index documents.\newline
     Our index.py file uses PyTerrier to create the index starting from the .json file
@@ -44,7 +70,9 @@
     \subsection{Vue.js \& PrimeVue}
     Finally, to develop the frontend, it has been used Vue.js, using the PrimeVue as UI library. Vue.js allows us to create a reactive and dynamic user interface, while PrimeVue provides us with a set of pre-built components and styles.
 
-    \section{Crawling and Indexing}
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \section{Crawling}\label{sec:crawling}
+    \section{Indexing}\label{sec:indexing}
 
     \section{Backend}
     The backend relies on a SQLite database to store the main information about the documents, making possible to retrieve the relevant ones following a call to the index.\newline
@@ -54,6 +82,8 @@
         \item /api/documents/get-documents/"query"/: This endpoint facilitates the retrieval of relevant documents based on a provided query string.
         \item /api/recommendation/get-recommended/: This endpoint is tasked with retrieving recommended artworks. By inputting a set of tags, it conducts a search within the index, returning all pertinent documents associated with the specified criteria.
     \end{itemize}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Frontend}
     The frontend is the main part of the application, where all the features are implemented.\newline
     For the interface, it has been chosen a simple layout, consisting of only a search-bar and a search button. Once the user performs the search, the aspect of the page changes, adding new components. We will examine each of them:
@@ -62,11 +92,19 @@
         \item Second, there will be shown some carousels for the recommended results based on the most frequents tags of the resulted artworks. Essentially, once all the artworks related to the query have been retrieved, the frontend extracts from all these artworks the related tags, it chooses the ones with the higher frequency and, using the /api/recommendation/get-recommended/ fetch, it shows a maximum of 5 results related to each tag in a moving carousel
         \item Finally, the artworks retrieved from the query are displayed in a card-like style, showing an insight of the artwork, the author, the title, the price, a short description and the main tags, with a Visit button that will bring the user to the page of that artwork in the original site
     \end{itemize}
+
+    \subsection{User Interface}\label{sec:ui}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{User Evaluation}
 
+    \subsection{User Experience}\label{sec:ux}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Running information}
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Conclusions}
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \end{spacing}
 \end{document}
