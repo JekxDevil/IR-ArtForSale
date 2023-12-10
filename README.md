@@ -25,7 +25,7 @@ to handle the project dependencies.
 Poetry creates a virtual environment for the project, to activate it select it as local interpreter in IDE or
 run `poetry shell` in the terminal to join the poetry environment.
 
-Run `poetry install` to install the dependencies.
+Run `poetry install --no-root` to install the dependencies from within the virtual env.
 
 All commands assume dependencies are installed in your python virtual environment e.g. poetry env, venv, etc
 
