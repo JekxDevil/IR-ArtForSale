@@ -46,16 +46,16 @@
         \item \url{www.saatchiart.com}
     \end{itemize}
 
-    The total cumulative number of documents gathered from the above websites is $\approx 8,500$ stored in
-    \textit{results.json} file containing the list of documents in JSON format.
+    The cumulative number of documents gathered from the above websites is around $\approx 8,500$ stored in
+    \textit{results.json} file containing the list of samples in JSON format.
     Further information concerning the scraping process and implementation is discussed
     in Crawler Section \ref{sec:crawling}.
 
     \subsection{Features}
     The course project requires 2 additional categorized features to be implemented besides the retrieval system:
-    1 each from simple and complex group features.
+    1 each from simple and complex group features.\\
+    The \textit{Art For Sale} project implements 2 + 1 bonus additional simple features:
 
-    The following features have been implemented:
     \begin{itemize}
         \item Simple
               \begin{itemize}
@@ -78,27 +78,57 @@
               \end{itemize}
     \end{itemize}
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \section{Technologies Used}
+    Shown results are sorted in descending order of relevance from left to right in the tabular view.\\
+    Implementation details of features are on Architecture Section \ref{sec:architecture}.\\
+    Moreover, by exploiting the automatic recommandation feature implemented using category tags
+    and the filtering feature to filter them,
+    the \textbf{Results clustering} complex feature was tackled by allowing to
+    group the results into topics based on category tags.
+    Though, a negative filter to exclude documents based on categories was not added,
+    thus partially implementing the feature.\\
 
-    \subsection{Scrapy}
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \section{Architecture}\label{sec:architecture}
+
+    \begin{figure}[H]
+        \centering
+        \caption{Search Engine Architecture of \textit{ArtForSale} project}
+        \label{fig:architecture}
+        \includegraphics[width=\textwidth, trim={0cm 16cm 0cm  3cm}]{figures/architecture.pdf}
+    \end{figure}
+
+    The project Information Retrieval system has the capabilities limited to a Text retrieval.
+
+    Text Access, access mode: pull and push, query and browsing
+    INFORMATION SHORT TERM NEEDS
+
+    Filtering and RECOMMENDATION SYSTEM: information needs: LONG TERM NEEDS
+
+    browser traces collected in cookies for every search query user issues, part of recommender system.
+
+    \subsection{Tech Stack}
+
+    \subsubsection{Scrapy}
     Scrapy, a Python framework for web crawling and scraping, is utilized in to initiate the crawling/scraping process for a specified set of artworks. The extracted data is subsequently channeled into a .json file.
 
-    \subsection{PyTerrier}
+    \subsubsection{PyTerrier}
     PyTerrier is a Python library that provides a high-level interface for the Terrier information retrieval system. In the provided code snippet, PyTerrier is used for building an information retrieval system to search and index documents.\newline
     Our index.py file uses PyTerrier to create the index starting from the .json file
 
-    \subsection{Django \& SQLite}
+    \subsubsection{Django \& SQLite}
     The main part of the project has been carried using a Django based backend. The backend handles the main fetches from the frontend.
     The backend is also the joint between the frontend and the index, making calls to a FASTApi that returns relevant documents given a query.\newline
     To return to the frontend the main information about the documents, the backend iterates through a database in SQLite that contains the main information for each artwork
 
-    \subsection{Vue.js \& PrimeVue}
+    \subsubsection{Vue.js \& PrimeVue}
     Finally, to develop the frontend, it has been used Vue.js, using the PrimeVue as UI library. Vue.js allows us to create a reactive and dynamic user interface, while PrimeVue provides us with a set of pre-built components and styles.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Crawling}\label{sec:crawling}
+
     \section{Indexing}\label{sec:indexing}
+    The Pyterrier platform supports indexing and retrieval operations by employing NLP techniques
+    to enable computers to understand the meaning of natural language text.
 
     \section{Backend}
     The backend relies on a SQLite database to store the main information about the documents, making possible to retrieve the relevant ones following a call to the index.\newline
@@ -121,6 +151,13 @@
 
     \subsection{User Interface}\label{sec:ui}
 
+    Emotional design: key in Apple, Google alike
+
+    Jacobs heuristics respected
+
+    standard filtering system
+
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{User Evaluation}
     System evaluation: Recall and precision paragraph
@@ -128,7 +165,16 @@
     \subsection{User Experience}\label{sec:ux}
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \section{Running information}
+    %\section{Running information}
+    \section{Limitations and Future Improvements}
+
+    The project is a \textit{Text Retrieval} system at its current state.
+    Since the type of data provided by artworks is not descriptive nor verbose,
+    implementing \textit{Text Analysis} features becomes troublesome because lacking the large amounts of
+    text data in order to discover interesting patterns buried in text.
+    Nevertheless, \textit{Text Organization} implementation feasibility is high due to
+    short well-structured categorized-based descriptions usually artwork documents have,
+    allowing to connect and navite scattered information.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Conclusions}
