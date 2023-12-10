@@ -85,10 +85,24 @@
     the \textbf{Results clustering} complex feature was tackled by allowing to
     group the results into topics based on category tags.
     Though, a negative filter to exclude documents based on categories was not added,
-    thus partially implementing the feature.\\
+    thus partially implementing another extra feature.\\
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Architecture}\label{sec:architecture}
+
+    The \textbf{Information Retrieval System} has capabilities limited to a
+    \textbf{TIS} \footnote{Text Information System}
+    with \textbf{Text retrieval}.\\
+    The \textbf{Text Access} part helping users to retrieve the right information at the right time,
+    is structured by connecting the system with users in both modes:
+    \begin{itemize}
+        \item \textbf{Pull}: user takes initiative to fetch ad-hoc relevant information from the system,
+              which offers \textbf{querying} and \textbf{browsing} capabilities.
+              Satisfies \textbf{short-term needs}.
+        \item \textbf{Push}: system takes initiative and has good knowledge of what are the user's
+              \textbf{long-term needs} of information throughout the filtering and recommendation system
+              using \textbf{browsing traces} to model the behavior of the user.
+    \end{itemize}
 
     \begin{figure}[H]
         \centering
@@ -97,16 +111,11 @@
         \includegraphics[width=\textwidth, trim={0cm 16cm 0cm  3cm}]{figures/architecture.pdf}
     \end{figure}
 
-    The project Information Retrieval system has the capabilities limited to a Text retrieval.
 
-    Text Access, access mode: pull and push, query and browsing
-    INFORMATION SHORT TERM NEEDS
+    \newpage
+    \textbf{browser traces} collected in cookies for every search query user issues, part of recommender system.
 
-    Filtering and RECOMMENDATION SYSTEM: information needs: LONG TERM NEEDS
-
-    browser traces collected in cookies for every search query user issues, part of recommender system.
-
-    \subsection{Tech Stack}
+    \subsection{Technology Stack}
 
     \subsubsection{Scrapy}
     Scrapy, a Python framework for web crawling and scraping, is utilized in to initiate the crawling/scraping process for a specified set of artworks. The extracted data is subsequently channeled into a .json file.
@@ -125,12 +134,20 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Crawling}\label{sec:crawling}
+    Harnesing (relatively) Bit Text Data characterized with the 5
+    Vs \footnote{Volume, Variety, Velocity, Value, Veracity},
+    we lack automating the Velocity attribute since we need to rerun the spiders manually to update its
+    status on the inverted index.
+    Crawling parses text that is unstructed to group them in well-structured documents, allowing them to be
+    easily indexed.
 
     \section{Indexing}\label{sec:indexing}
-    The Pyterrier platform supports indexing and retrieval operations by employing NLP techniques
-    to enable computers to understand the meaning of natural language text.
+    The Pyterrier platform supports indexing and retrieval operations by employing shallow
+    NLP \footnote{Natural Language Processing}
+    techniques to enable computers to understand the meaning of natural language text.
 
-    \section{Backend}
+    \section{Retrieval}
+    \subsection{Backend}
     The backend relies on a SQLite database to store the main information about the documents, making possible to retrieve the relevant ones following a call to the index.\newline
     Django serves as the foundational framework for constructing the primary structure, bringing with it a multitude of advantages such as rapid development, a robust and secure architecture, built-in administrative features, and a thriving community support ecosystem.\newline
     The backend handles the two main fetches of the application:
@@ -140,7 +157,7 @@
     \end{itemize}
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \section{Frontend}
+    \subsection{Frontend}
     The frontend is the main part of the application, where all the features are implemented.\newline
     For the interface, it has been chosen a simple layout, consisting of only a search-bar and a search button. Once the user performs the search, the aspect of the page changes, adding new components. We will examine each of them:
     \begin{itemize}
@@ -149,7 +166,7 @@
         \item Finally, the artworks retrieved from the query are displayed in a card-like style, showing an insight of the artwork, the author, the title, the price, a short description and the main tags, with a Visit button that will bring the user to the page of that artwork in the original site
     \end{itemize}
 
-    \subsection{User Interface}\label{sec:ui}
+    \subsubsection{User Interface}\label{sec:ui}
 
     Emotional design: key in Apple, Google alike
 
@@ -159,10 +176,16 @@
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \section{User Evaluation}
+    \section{Evaluation}
     System evaluation: Recall and precision paragraph
 
-    \subsection{User Experience}\label{sec:ux}
+    \subsection{User Evaluation}
+
+    SUS includes pia, quote are designers users too?
+
+    \subsubsection{User Experience}\label{sec:ux}
+    Sentiment analysis
+
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %\section{Running information}
@@ -174,10 +197,19 @@
     text data in order to discover interesting patterns buried in text.
     Nevertheless, \textit{Text Organization} implementation feasibility is high due to
     short well-structured categorized-based descriptions usually artwork documents have,
-    allowing to connect and navite scattered information.
+    allowing to connect and navigate scattered information.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Conclusions}
+    We had fun with deciding the technology stack to use and the architecture structure.
+    We enjoyed the project freedom that allowed us to put in practice all the metholodogies
+    learnt from this course and all the others we had during the bachelor.
+
+    \section{References}
+    \begin{itemize}
+        \item \textit{ArtForSale} GitHub project public repository:\\
+              \url{https://github.com/JekxDevil/IR-ArtForSale}
+    \end{itemize}
 
 \end{spacing}
 \end{document}
