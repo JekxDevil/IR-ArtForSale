@@ -311,8 +311,7 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Evaluation}\label{sec:evaluation}
     Part of the \textbf{Query and Retrieval Process}, regarding \textbf{Evaluation}.\\
-
-
+    \textbf{Effectiveness}: quality of results.
     Employing of \textbf{query expansion} was tested by always adding the \textit{art} keywork
     at the end of each search to get more results.
     This led to under-constrained query giving back not relevant results.
@@ -323,30 +322,39 @@
     At start, every field was in a \textit{pandas.Series} and then given to the indexer but this lead to
     unsatisfying results: it seemed like only the first field (title) got indexed,
     giving an \textbf{over-constrained query} feeling where either no documents or no relevant ones were returned,
-    Hence we decided to put every field into one big "blob" of text and then indexed that.
-
-    \textbf{Effectiveness}: quality of results. \textbf{Efficiency}: response time and throughput.
-
-    System evaluation: Recall and precision paragraph
+    Hence we decided to put every field into one big "blob" of text and then indexed that.\\
+    \textbf{Efficiency}: response time and throughput.
+    Since there is no pagination of results, all the list of relevant documents is sent and shown at once
+    in the single page.
+    This can lead to queries that give back hundred of documents and the response time to render them is high
+    and has been partially leverage in the UX by adding a loader animation for retrieval,
+    shown in Figure \ref{fig:loader}.
 
     \subsection{User Evaluation}
-    Part of the \textbf{Relevance Feedback Process}, regarding \textbf{User Evaluation}.
-
-    SUS includes someone normal not studying informatics, quote are designers users too?
+    Part of the \textbf{Relevance Feedback Process}, regarding \textbf{User Evaluation}.\\
+    The conducted SUS modules are in \textit{docs/user-evaluation.pdf}.
+    After the development, we have conduct an user evaluation on 5 different users using the SUS questionnaire.
+    The SUS questionnaire is a 10-item questionnaire that measures the usability of a system.
+    Each question is rated on a 5-point Likert scale, from strongly disagree to strongly agree.
+    At the end of the questionnaire, we can compute the SUS score, which is a number between 0 and 100
+    that indicates how usable the system is.
+    We asked 5 users to use the system and fill the SUS questionnaire.
+    While using the system we asked them to perform some tasks, such as searching for artworks,
+    check the recommendations and use the filters.
+    Sentiment analysis: all the users found the system intuitive and well-structured,
+    without needing particular help to perform the various tasks.
+    Once computed, we have obtained a 91.5\% SUS score.
+    Given the results of the SUS questionnaire, we can say that the system is definitely usable
+    and that the users are satisfied with it.
 
     \begin{figure}[H]
         \centering
         \caption{Loading animation while retrieving documents}
-        \label{fig:carousel}
+        \label{fig:loader}
         \includegraphics[width=\textwidth, trim={7cm 0cm 7cm 0cm}, clip]{figures/loading.jpeg}
     \end{figure}
 
-    \subsubsection{User Experience}\label{sec:ux}
-    Sentiment analysis
-
-
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %\section{Running information}
     \section{Limitations and Future Improvements}
 
     The project is a \textit{Text Retrieval} system at its current state.
@@ -359,6 +367,9 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Conclusions}
+    The project results is overall satifactory.
+    We went for a couple iterations cycles to develop the whole stack and choosing the right tools aka frameworks
+    allowed us to focus on the final result rather than non relevant technicalities.
     We had fun with deciding the technology stack to use and the architecture structure.
     We enjoyed the project freedom that allowed us to put in practice all the metholodogies
     learnt from this course and all the others we had during the bachelor.
