@@ -159,27 +159,72 @@
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Crawling}\label{sec:crawling}
-    Part of \textbf{Indexing Process}, regarding \textbf{Text Acquisition}, in which the system
-    identifies and stores documents for indexing.
+    It is part of \textbf{Indexing Process}, regarding \textbf{Text Acquisition}, in which the system
+    identifies and stores documents for indexing.\\
+    The purporse is to harness (relatively) bit text data characterized with the 5
+    Vs\footnote{Volume, Variety, Velocity, Value, Veracity}
+    located in previous mentioned web sites regarding for sale art.
+    Among the 5 Vs, automating the Velocity attribute to keep track of the dynamic real-time data characterizing
+    the art selling market was not possible:
+    manual re-crawling of the spiders and inverted index re-creation is needed.
+    Crawling through Scrapy parses text that is unstructed to group it in well-structured documents,
+    allowing them to be easily indexed.
+    The structure of each documents is:
+    \vspace{-0.2cm}
+    \begin{itemize}
+        \setlength\itemsep{0.1em}
+        \item author
+        \item title
+        \item price
+        \item description
+        \item categories
+        \item image url reference
+        \item post url reference
+    \end{itemize}
 
-    Harnesing (relatively) Bit Text Data characterized with the 5
-    Vs \footnote{Volume, Variety, Velocity, Value, Veracity},
-    we lack automating the Velocity attribute since we need to rerun the spiders manually to update its
-    status on the inverted index.
-    Crawling parses text that is unstructed to group them in well-structured documents, allowing them to be
-    easily indexed.
-    The extracted data is subsequently channeled into a .json file.
+    The extracted data is subsequently channeled into a \textit{.json} file specified at start.
+    After all spiders have been run, every result is manually merged into the \textit{results.json} file.\\
+    Our sample volume is around $\approx 8,500$.
 
     \section{Indexing}\label{sec:indexing}
-    Part of \textbf{Indexing Process}, regarding \textbf{Text Transformation}, in which the system
-    transforms documents into index terms or features, \textbf{Index Creation}, where the
-    system takes index terms and creates data structures to support fast searching,
-    and \textbf{Ranking and Retrieval}, which uses query and index to generate a ranked list of docs.
-
+    It is part of \textbf{Indexing Process},
+    regarding \textbf{Text Transformation}, in which the system transforms documents into index terms,
+    \textbf{Index Creation}, where index terms are employed to create data structures to support fast searching,
+    and \textbf{Ranking and Retrieval}, which uses query and index to generate a ranked list of docs.\\
     The Pyterrier platform supports indexing and retrieval operations by employing shallow
     NLP \footnote{Natural Language Processing}
-    techniques to enable computers to understand the meaning of natural language text.\\
+    techniques.\\
+    The indexer served through a FastAPI server in \textit{crawler/index.py} file,
+    returns a ranked list of documents in descending order of relevance probability $p \in [0,1]$,
+    which is the optimal standard strategy justified by the
+    \textbf{Probability Ranking Principle} [Robertson 77].
+    The indexer creates the inverted index from the \textit{results.json} file containing the documents.
+    \newpage
+
     Our index.py file uses PyTerrier to create the index starting from the .json file.
+
+    Porter algorithmic Stemmer, stopword list, english word tokenisation is default in pyterrier.
+
+    Around x terms in the \textbf{lexicon}
+
+
+    BM25 model, similarity-based model with ranked retrieval including TF, IDF and sublinear TF transformation
+    to avoid single term dominance.
+
+    Employing of \textbf{query expansion} was tested by always adding the \textit{art} keywork
+    at the end of each search to get more results.
+    This led to under-constrained query giving back not relevant results.
+    The reason was due to the fact that for our specific set of concerns, hence documents, the word
+    \textit{"art"} is an high frequency word, thus useless to achieve pertinency as explained by
+    \textbf{Zipf's Law}.
+
+    At start, every field was in a \textit{pandas.Series} and then given to the indexer but this lead to
+    unsatisfying results: it seemed like only the first field (title) got indexed,
+    giving an \textbf{over-constrained query} feeling where either no documents or no relevant ones were returned,
+    Hence we decided to put every field into one big "blob" of text and then indexed that.
+
+
+
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Retrieval}
@@ -207,6 +252,10 @@
     To return to the frontend the main information about the documents,
     the backend iterates through a database in SQLite that contains the main information
     for each artwork.
+
+
+    recommender system
+    use-based information filtering and content-based information filtering
 
     \subsection{Frontend}\label{sec:frontend}
     Part of \textbf{Query and Retrieval Process}, regarding \textbf{User Interaction},
@@ -244,7 +293,7 @@
     System evaluation: Recall and precision paragraph
 
     \subsection{User Evaluation}
-    Part of the \textbf{Relevance Feedback Process}, regarding \textbf{User Evaluation}
+    Part of the \textbf{Relevance Feedback Process}, regarding \textbf{User Evaluation}.
 
     SUS includes pia, quote are designers users too?
 
