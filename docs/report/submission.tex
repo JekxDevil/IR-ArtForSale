@@ -265,13 +265,14 @@
     Part of \textbf{Query and Retrieval Process},
     regarding \textbf{User Interaction}, in which the system supports the creation of a query and display results.\\
     The frontend is the main part of the application, where all the features are implemented.
-    For the interface, it has been chosen a simple layout, consisting of only a search bar and a search button.
+    For the interface, it has been chosen a simple layout shown in Figure \ref{fig:ui},
+    consisting of only a search bar and a search button.
     Once the user performs the search, the aspect of the page changes, adding new components:
 
     \begin{figure}[H]
         \centering
         \caption{UI of the \textit{Art For Sale} project}
-        \label{fig:carousel}
+        \label{fig:ui}
         \includegraphics[width=\textwidth, trim={7cm 0cm 7cm 2cm}, clip]{figures/ui.jpeg}
     \end{figure}
 
@@ -290,21 +291,22 @@
     \end{itemize}
 
     \subsubsection{User Interface}\label{sec:ui}
-
-    Jacobs heuristics respected
-    UI has been layed out following Jakob's 10 usability heuristics as much as possible:
-
-
-    Emotional design: key in Apple, Google alike
-
-
-    standard filtering system
+    UI has been layed out following Jakob's 10 usability heuristics as much as possible, particularly:
+    aesthetic and minimalist design, visibility of system status and consistency and standards.\\
+    Norman's Emotional Design guidelines have been followed to obtain a UI gradient effect and minimalism similar
+    to what is the user experience in Apple products, so users will feel confortable using it.
 
     \subsubsection{Filtering}\label{sec:filtering}
-    The filtering features is implemented frontend side:
-    the filter string representation is checked in every documents, the ones which have it are still shown,
-    otherwise it is hidden.
+    The filtering features is implemented frontend side.
     If no filter is selected, then it simply shows all the results from the query.
+    Otherwise, it checks:
+    \begin{itemize}
+        \setlength\itemsep{0.1em}
+        \item price value range: check if the document value is between the min and max inserted
+        \item web sites: check if the document origin url contains the selected website(s)
+        \item category: the UI allows only to select a category from the ones already present in the result of your query
+    \end{itemize}
+
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Evaluation}\label{sec:evaluation}
