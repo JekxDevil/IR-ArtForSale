@@ -82,7 +82,8 @@
     \end{itemize}
 
     Shown results are sorted in descending order of relevance from left to right in the tabular view.\\
-    Implementation details of features are on Architecture Section \ref{sec:architecture}.\\
+    Implementation details are on Architecture, Recommender and Filtering Sections
+    \ref{sec:architecture}, \ref{sec:recommender}, \ref{sec:filtering}.\\
     Moreover, by exploiting the automatic recommandation feature implemented using category tags
     and the filtering feature to filter them,
     the \textbf{Results clustering} complex feature was tackled by allowing to group the results
@@ -184,7 +185,7 @@
 
     The extracted data is subsequently channeled into a \textit{.json} file specified at start.
     After all spiders have been run, every result is manually merged into the \textit{results.json} file.\\
-    Our sample volume is around $\approx 8,500$.
+    Our sample volume is around $\approx 8,500$ entries.
     To run crawling refer to project's \textit{README.md}.
 
     \section{Indexing}\label{sec:indexing}
@@ -219,61 +220,92 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Retrieval}
 
-    \textbf{browser traces} collected in cookies for every search query user issues, part of recommender system.
-
     \subsection{Backend}\label{sec:backend}
     The backend relies on a SQLite database to store the main information about the documents,
-    making possible to retrieve the relevant ones following a call to the index.\newline
-    Django serves as the foundational framework for constructing the primary structure,
-    bringing with it a multitude of advantages such as rapid development, a robust and secure architecture,
-    built-in administrative features, and a thriving community support ecosystem.\newline
+    making it possible to retrieve the relevant ones following a call to the index.\newline
     The backend handles the two main fetches of the application:
+
     \begin{itemize}
-        \item /api/documents/get-documents/"query"/:
-              This endpoint facilitates the retrieval of relevant documents based on a provided query string.
-        \item /api/recommendation/get-recommended/:
-              This endpoint is tasked with retrieving recommended artworks.
+        \item \textit{GET /api/documents/get-documents/\underline{query}/}:
+              Endpoint facilitating the retrieval of relevant documents based on a provided \underline{query} string.
+        \item \textit{GET /api/recommendation/get-recommended/}:
+              Endpoint tasked with retrieving recommended artworks.
               By inputting a set of tags, it conducts a search within the index,
-              returning all pertinent documents associated with the specified criteria.
+              returning all pertinent documents associated with the specified category tags.
     \end{itemize}
-    The backend handles the main fetches from the frontend.
-    The backend is also the joint between the frontend and the index,
-    making calls to a FASTApi that returns relevant documents given a query.
-    To return to the frontend the main information about the documents,
-    the backend iterates through a database in SQLite that contains the main information
-    for each artwork.
 
+    The backend is the joint between the frontend and the indexer.
+    It routes fetch request and, given a query, it returns the list of relevant documents with its main information
+    by iterating through the database containing it for each artwork.
 
-    recommender system
-    use-based information filtering and content-based information filtering
+    \subsubsection{Automatic recommendation}\label{sec:recommender}
+    The 2\textsuperscript{nd} API call is used to implement the \textit{recommender system}:
+    the frontend keeps track of the categories as \textbf{browser traces} from the results given by user's queries.
+    Then, the indexer receives such categories as query and give back a set of documents to the backend.
+    This set is populated with its information stored in the database and it is finally given back to the frontend in
+    the suggestions carousels.
+    Essentially, once all the artworks related to the query have been retrieved,
+    the frontend extracts from all these artworks the related tags,
+    it chooses the ones with the higher frequency, fetches result using the API call and
+    shows a maximum of 5 results related to each tag in a moving carousel
+    It is a \textbf{Content-Based Information Filtering}:
+    recommendation in such dynamic collection is individual to users based on interest and preferences inferred from
+    previous user pseudo feedback, hence assuming top retrieved documents are relevant.
+    At the end of each section the recommendations tags are cleaned i.e. page reload.
+
+    % photo of carousel
+    \begin{figure}[H]
+        \centering
+        \caption{Automatic Recommendation - Carousel}
+        \label{fig:carousel}
+        \includegraphics[width=0.3\textwidth, trim={0cm 0cm 0cm 0cm}]{figures/recommendation-carousel.jpeg}
+    \end{figure}
 
     \subsection{Frontend}\label{sec:frontend}
-    Part of \textbf{Query and Retrieval Process}, regarding \textbf{User Interaction},
-    in which the system supports the creation of a query and display results.
+    Part of \textbf{Query and Retrieval Process},
+    regarding \textbf{User Interaction}, in which the system supports the creation of a query and display results.\\
+    The frontend is the main part of the application, where all the features are implemented.
+    For the interface, it has been chosen a simple layout, consisting of only a search bar and a search button.
+    Once the user performs the search, the aspect of the page changes, adding new components:
 
-    transforms documents into index terms or features, and \textbf{Index Creation}, where the
-    system takes index terms and creates data structures to support fast searching.
+    \begin{figure}[H]
+        \centering
+        \caption{UI of the \textit{Art For Sale} project}
+        \label{fig:carousel}
+        \includegraphics[width=\textwidth, trim={7cm 0cm 7cm 2cm}, clip]{figures/ui.jpeg}
+    \end{figure}
 
-    The frontend is the main part of the application, where all the features are implemented.\newline
-    For the interface, it has been chosen a simple layout, consisting of only a search-bar and a search button. Once the user performs the search, the aspect of the page changes, adding new components. We will examine each of them:
     \begin{itemize}
-        \item First, under the search-bar will appear a new set of control to filter the obtained results according to four main characteristics: site of origin, minimum price, maximum price and tag.
-        \item Second, there will be shown some carousels for the recommended results based on the most frequents tags of the resulted artworks. Essentially, once all the artworks related to the query have been retrieved, the frontend extracts from all these artworks the related tags, it chooses the ones with the higher frequency and, using the /api/recommendation/get-recommended/ fetch, it shows a maximum of 5 results related to each tag in a moving carousel
-        \item Finally, the artworks retrieved from the query are displayed in a card-like style, showing an insight of the artwork, the author, the title, the price, a short description and the main tags, with a Visit button that will bring the user to the page of that artwork in the original site
+        \item \underline{Filter selectors}: under the search bar there are filter selectors to control the obtained results
+              according to 4 main characteristics:
+              site of origin, minimum price, maximum price and category tag.
+        \item \underline{Recommended Carousel}:
+              At the right side of the page, the recommended carousel suggests results based on the most frequent tags
+              of the resulted artworks.
+              It shows a maximum of 5 results related to each tag in a moving carousel.
+        \item \underline{Document tabular view}: retrieved artworks from the query are displayed in card components,
+              following a tabular view as requested by the simple feature implemented.
+              The card shows an insight of artwork image, author, title, price, short description and main tags,
+              with a \textit{"Visit"} button that will bring the user to the page of that artwork in the original website.
     \end{itemize}
-
-    Vue.js allows us to create a reactive and dynamic user interface,
 
     \subsubsection{User Interface}\label{sec:ui}
 
+    Jacobs heuristics respected
+    UI has been layed out following Jakob's 10 usability heuristics as much as possible:
+
+
     Emotional design: key in Apple, Google alike
 
-    Jacobs heuristics respected
 
     standard filtering system
 
+    \subsubsection{Filtering}\label{sec:filtering}
+    The filtering features is implemented frontend side:
+    the filter string representation is checked in every documents, the ones which have it are still shown,
+    otherwise it is hidden.
+    If no filter is selected, then it simply shows all the results from the query.
 
-    %\section{Feedback}
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Evaluation}\label{sec:evaluation}
     Part of the \textbf{Query and Retrieval Process}, regarding \textbf{Evaluation}.\\
@@ -298,7 +330,14 @@
     \subsection{User Evaluation}
     Part of the \textbf{Relevance Feedback Process}, regarding \textbf{User Evaluation}.
 
-    SUS includes pia, quote are designers users too?
+    SUS includes someone normal not studying informatics, quote are designers users too?
+
+    \begin{figure}[H]
+        \centering
+        \caption{Loading animation while retrieving documents}
+        \label{fig:carousel}
+        \includegraphics[width=\textwidth, trim={7cm 0cm 7cm 0cm}, clip]{figures/loading.jpeg}
+    \end{figure}
 
     \subsubsection{User Experience}\label{sec:ux}
     Sentiment analysis
