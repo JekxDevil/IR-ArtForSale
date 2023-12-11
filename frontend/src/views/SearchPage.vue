@@ -220,9 +220,10 @@ const getAllTags = () => {
 
   }
   console.log(query)
-  const query_array = query.value.split(" ");
+  let query_array = query.value.split(" ");
+  query_array = query_array.map(item => item.toLowerCase())
   const cleaned_tags = all_tags.filter( function( el ) {
-    return !query_array.includes( el );
+    return !query_array.includes( el.toLowerCase() );
   } );
   complete_tags.value = findTop3Tag(cleaned_tags)
   tags.value = all_tags.filter((value, index) => all_tags.indexOf(value) === index);
