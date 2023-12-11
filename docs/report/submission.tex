@@ -94,7 +94,7 @@
     \section{Architecture}\label{sec:architecture}
 
     The \textbf{Information Retrieval System} has capabilities limited to a
-    \textbf{TIS} \footnote{Text Information System}
+    \textbf{TIS}\footnote{Text Information System}
     with \textbf{Text retrieval}.\\
     The \textbf{Text Access} part helping users to retrieve the right information at the right time,
     is structured by connecting the system with users in both modes:
@@ -170,7 +170,7 @@
     Crawling through Scrapy parses text that is unstructed to group it in well-structured documents,
     allowing them to be easily indexed.
     The structure of each documents is:
-    \vspace{-0.2cm}
+    \vspace{-0.1cm}
     \begin{itemize}
         \setlength\itemsep{0.1em}
         \item author
@@ -185,6 +185,7 @@
     The extracted data is subsequently channeled into a \textit{.json} file specified at start.
     After all spiders have been run, every result is manually merged into the \textit{results.json} file.\\
     Our sample volume is around $\approx 8,500$.
+    To run crawling refer to project's \textit{README.md}.
 
     \section{Indexing}\label{sec:indexing}
     It is part of \textbf{Indexing Process},
@@ -192,39 +193,28 @@
     \textbf{Index Creation}, where index terms are employed to create data structures to support fast searching,
     and \textbf{Ranking and Retrieval}, which uses query and index to generate a ranked list of docs.\\
     The Pyterrier platform supports indexing and retrieval operations by employing shallow
-    NLP \footnote{Natural Language Processing}
+    NLP\footnote{Natural Language Processing}
     techniques.\\
     The indexer served through a FastAPI server in \textit{crawler/index.py} file,
     returns a ranked list of documents in descending order of relevance probability $p \in [0,1]$,
     which is the optimal standard strategy justified by the
     \textbf{Probability Ranking Principle} [Robertson 77].
-    The indexer creates the inverted index from the \textit{results.json} file containing the documents.
-    \newpage
+    The indexer creates the inverted index from the \textit{results.json} file containing the scraped documents.
+    Characteristics of index:
+    \vspace{-0.1cm}
+    \begin{itemize}
+        \setlength\itemsep{0.1em}
+        \item Stemmer: Porter, algorithmic-basedd, Pyterrier's default
+        \item Stopword: Pyterrier's default
+        \item Tokenisation: English words, Pyterrier's default
+    \end{itemize}
 
-    Our index.py file uses PyTerrier to create the index starting from the .json file.
-
-    Porter algorithmic Stemmer, stopword list, english word tokenisation is default in pyterrier.
-
-    Around x terms in the \textbf{lexicon}
-
-
-    BM25 model, similarity-based model with ranked retrieval including TF, IDF and sublinear TF transformation
-    to avoid single term dominance.
-
-    Employing of \textbf{query expansion} was tested by always adding the \textit{art} keywork
-    at the end of each search to get more results.
-    This led to under-constrained query giving back not relevant results.
-    The reason was due to the fact that for our specific set of concerns, hence documents, the word
-    \textit{"art"} is an high frequency word, thus useless to achieve pertinency as explained by
-    \textbf{Zipf's Law}.
-
-    At start, every field was in a \textit{pandas.Series} and then given to the indexer but this lead to
-    unsatisfying results: it seemed like only the first field (title) got indexed,
-    giving an \textbf{over-constrained query} feeling where either no documents or no relevant ones were returned,
-    Hence we decided to put every field into one big "blob" of text and then indexed that.
-
-
-
+    The retrieval model is BM25: similarity-based model with ranked retrieval including
+    TF\footnote{Term Frequency},
+    IDF\footnote{Inverse Document Frequency}
+    and sublinear TF transformation to avoid single term dominance.
+    %Around x terms in the \textbf{lexicon}
+    To run the indexer refer to project's \textit{README.md}.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Retrieval}
@@ -287,6 +277,19 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Evaluation}\label{sec:evaluation}
     Part of the \textbf{Query and Retrieval Process}, regarding \textbf{Evaluation}.\\
+
+
+    Employing of \textbf{query expansion} was tested by always adding the \textit{art} keywork
+    at the end of each search to get more results.
+    This led to under-constrained query giving back not relevant results.
+    The reason was due to the fact that for our specific set of concerns, hence documents, the word
+    \textit{"art"} is an high frequency word, thus useless to achieve pertinency as explained by
+    \textbf{Zipf's Law}.
+
+    At start, every field was in a \textit{pandas.Series} and then given to the indexer but this lead to
+    unsatisfying results: it seemed like only the first field (title) got indexed,
+    giving an \textbf{over-constrained query} feeling where either no documents or no relevant ones were returned,
+    Hence we decided to put every field into one big "blob" of text and then indexed that.
 
     \textbf{Effectiveness}: quality of results. \textbf{Efficiency}: response time and throughput.
 
