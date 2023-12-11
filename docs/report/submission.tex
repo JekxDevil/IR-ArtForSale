@@ -36,9 +36,13 @@
     The system has around $\approx 8,500$ indexed documents for searching, browsing and presented through a
     user-friendly and intuitive interface, further details in UI/UX Section \ref{sec:ui}.
     The source code repository of the project is linked in Section \ref{sec:references}.
-    
+
     \subsection{Dowload}
-    The complete code exceeded the size allowed by iCorsi. For this reason, the repository can be found at \url{https://github.com/JekxDevil/IR-ArtForSale}
+    The complete code exceeded the size allowed by iCorsi.
+    For this reason, the repository can be found at
+    \url{https://github.com/JekxDevil/IR-ArtForSale}.
+    The release at submission is \textit{submission} with tag \textit{v1.0.0} and commit hash
+    \textit{asdfasdfasdf}.
 
     \subsection{Websites}\label{sec:websites}
     The following websites were chosen for the project based on availability of data, ease of scraping and
@@ -314,41 +318,27 @@
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Evaluation}\label{sec:evaluation}
     Part of the \textbf{Query and Retrieval Process}, regarding \textbf{Evaluation}.\\
-    \textbf{Effectiveness}: quality of results.
-    Employing of \textbf{query expansion} was tested by always adding the \textit{art} keywork
-    at the end of each search to get more results.
+    \newline
+    \textbf{Effectiveness}: quality of results.\\
+    An attempt to improve effectiveness was employing of \textbf{query expansion},
+    tested by always adding the \textit{art} keywork at the end of each search to get more results.
     This led to under-constrained query giving back not relevant results.
     The reason was due to the fact that for our specific set of concerns, hence documents, the word
     \textit{"art"} is an high frequency word, thus useless to achieve pertinency as explained by
-    \textbf{Zipf's Law}.
-
-    At start, every field was in a \textit{pandas.Series} and then given to the indexer but this lead to
+    \textbf{Zipf's Law}.\\
+    A change to improve effectiveness was done when we noticed that at start,
+    every field was in a \textit{pandas.Series} and then given to the indexer but this lead to
     unsatisfying results: it seemed like only the first field (title) got indexed,
-    giving an \textbf{over-constrained query} feeling where either no documents or no relevant ones were returned,
+    giving an \textbf{over-constrained query} feeling where
+    either no documents or no relevant ones were returned,
     Hence we decided to put every field into one big "blob" of text and then indexed that.\\
-    \textbf{Efficiency}: response time and throughput.
-    Since there is no pagination of results, all the list of relevant documents is sent and shown at once
-    in the single page.
-    This can lead to queries that give back hundred of documents and the response time to render them is high
-    and has been partially leverage in the UX by adding a loader animation for retrieval,
-    shown in Figure \ref{fig:loader}.
-
-    \subsection{User Evaluation}
-    Part of the \textbf{Relevance Feedback Process}, regarding \textbf{User Evaluation}.\\
-    The conducted SUS modules are in \textit{docs/user-evaluation.pdf}.
-    After the development, we have conduct an user evaluation on 5 different users using the SUS questionnaire.
-    The SUS questionnaire is a 10-item questionnaire that measures the usability of a system.
-    Each question is rated on a 5-point Likert scale, from strongly disagree to strongly agree.
-    At the end of the questionnaire, we can compute the SUS score, which is a number between 0 and 100
-    that indicates how usable the system is.
-    We asked 5 users to use the system and fill the SUS questionnaire.
-    While using the system we asked them to perform some tasks, such as searching for artworks,
-    check the recommendations and use the filters.
-    Sentiment analysis: all the users found the system intuitive and well-structured,
-    without needing particular help to perform the various tasks.
-    Once computed, we have obtained a 91.5\% SUS score.
-    Given the results of the SUS questionnaire, we can say that the system is definitely usable
-    and that the users are satisfied with it.
+    \newline
+    \textbf{Efficiency}: response time and throughput.\\
+    Since there is no pagination of results, all the list of relevant documents is sent
+    and shown at once in the single page.
+    This can lead to queries that give back hundred of documents
+    and the response time to render them is high and has been partially leveraged
+    in the UX by adding a loader animation for retrieval as shown in Figure \ref{fig:loader}.
 
     \begin{figure}[H]
         \centering
@@ -356,6 +346,41 @@
         \label{fig:loader}
         \includegraphics[width=\textwidth, trim={7cm 0cm 7cm 0cm}, clip]{figures/loading.jpeg}
     \end{figure}
+
+    \subsection{User Evaluation}
+    Part of the \textbf{Relevance Feedback Process}, regarding \textbf{User Evaluation}.\\
+    The conducted SUS modules are in \textit{docs/user-evaluation.pdf}.
+    After the development, we conducted an user evaluation on 5 different users
+    using the \textbf{SUS questionnaire}.
+    The SUS questionnaire is a 10-item questionnaire that measures the usability of a system.
+    Each question is rated on a 5-point Likert scale, from strongly disagree to strongly agree.
+    At the end of the questionnaire, we can compute the SUS score, which is a number
+    between 0 and 100 that indicates how usable the system is.
+    We asked 5 users to use the system, fill the SUS questionnaire and signing it.
+    While using the system we asked them to perform the following tasks:
+    \begin{itemize}
+        \setlength\itemsep{0.1em}
+        \item familiaze for 10 seconds with the platform
+        \item search for an artwork
+        \item try out the filters
+        \item check the suggested recommendations
+    \end{itemize}
+    The first 3 SUS forms were done a week before the submission, hence we had the time to
+    implement the suggested enhancements during the last sprint iteration of development:
+    \begin{itemize}
+        \setlength\itemsep{0.1em}
+        \item put the recommendation carousel on a side
+        \item reset of filters after each search
+        \item adjust card size
+        \item add a spinner during loading of results since it is not intuitive it is loading them
+        \item add enter event listener to search bar to directly query the system
+    \end{itemize}
+
+    \underline{Sentiment analysis}: all users found the system intuitive and well-structured,
+    without needing particular help to perform the various tasks.
+    Once computed, we have obtained a 91.5\% SUS score.
+    Given the results of the SUS questionnaire, we can say that the system is definitely usable
+    and that the users are satisfied with it.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Limitations and Future Improvements}
