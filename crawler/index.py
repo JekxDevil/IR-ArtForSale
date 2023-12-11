@@ -40,7 +40,7 @@ app.add_middleware(
 def search(query: str):
     print(query)
     reverse_index = pt.IndexFactory.of('./index_total')
-    tf_idf = pt.BatchRetrieve(reverse_index, wmodel="TF_IDF")
+    tf_idf = pt.BatchRetrieve(reverse_index, wmodel="BM25")
     output = tf_idf.search(query)
     return output.to_dict()
 
