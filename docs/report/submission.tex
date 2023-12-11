@@ -30,11 +30,12 @@
 \begin{spacing}{1}   % use double spacing for rest of manuscript
 
     \section{Introduction}
-    The Information Retrieval course project \textit{"ArtForSale"} aims to be a working prototype of an information
-    retrieval system for a specific task: to display for-sale artworks from art selling related websites
-    listed in Section \ref{sec:websites}.
+    The Information Retrieval course project \textit{"ArtForSale"} aims to be a working prototype of an
+    information retrieval system for a specific task: to display for-sale artworks from art selling related
+    websites listed in Section \ref{sec:websites}.
     The system has around $\approx 8,500$ indexed documents for searching, browsing and presented through a
     user-friendly and intuitive interface, further details in UI/UX Section \ref{sec:ui}, \ref{sec:ux}.
+    The source code repository of the project is linked in Section \ref{sec:references}.
 
     \subsection{Websites}\label{sec:websites}
     The following websites were chosen for the project based on availability of data, ease of scraping and
@@ -52,7 +53,8 @@
     in Crawler Section \ref{sec:crawling}.
 
     \subsection{Features}
-    The course project requires 2 additional categorized features to be implemented besides the retrieval system:
+    The course project requires 2 additional categorized features to be implemented besides
+    the retrieval system:
     1 each from simple and complex group features.\\
     The \textit{Art For Sale} project implements 2 + 1 bonus additional simple features:
 
@@ -60,19 +62,20 @@
         \item Simple
               \begin{itemize}
                   \item \textbf{Result presentation}:
-                        results should be presented in a tabular format so that many results could be seen at the same time.
+                        results should be presented in a tabular format so that many results could be
+                        seen at the same time.
                         Each table cell should contain appropriate information for your project.
                   \item \textbf{Filtering}:
                         in addition to being able to search by title, an user should be able to filter the
                         results based on at least 3 relevant attributes for your project.
               \end{itemize}
-
         \item Complex
               \begin{itemize}
                   \item \textbf{Automatic recommendation}:
                         In addition to the relevant search results pertaining to the user query,
-                        the user should also be suggested "similar" products based on, say, category, description,
-                        price etc. The ordering among the recommended items is not important.
+                        the user should also be suggested "similar" products based on, say,
+                        category, description, price etc.
+                        The ordering among the recommended items is not important.
                         However, you should mention how did you arrive at the recommendations.
                         For this purpose, you can use any open-source recommenders available.
               \end{itemize}
@@ -82,8 +85,8 @@
     Implementation details of features are on Architecture Section \ref{sec:architecture}.\\
     Moreover, by exploiting the automatic recommandation feature implemented using category tags
     and the filtering feature to filter them,
-    the \textbf{Results clustering} complex feature was tackled by allowing to
-    group the results into topics based on category tags.
+    the \textbf{Results clustering} complex feature was tackled by allowing to group the results
+    into topics based on category tags.
     Though, a negative filter to exclude documents based on categories was not added,
     thus partially implementing another extra feature.\\
 
@@ -98,7 +101,7 @@
     \begin{itemize}
         \item \textbf{Pull}: user takes initiative to fetch ad-hoc relevant information from the system,
               which offers \textbf{querying} and \textbf{browsing} capabilities.
-              Satisfies \textbf{short-term needs}.
+              It satisfies \textbf{short-term needs}.
         \item \textbf{Push}: system takes initiative and has good knowledge of what are the user's
               \textbf{long-term needs} of information throughout the filtering and recommendation system
               using \textbf{browsing traces} to model the behavior of the user.
@@ -108,56 +111,110 @@
         \centering
         \caption{Search Engine Architecture of \textit{ArtForSale} project}
         \label{fig:architecture}
-        \includegraphics[width=\textwidth, trim={0cm 16cm 0cm  3cm}]{figures/architecture.pdf}
+        \includegraphics[width=\textwidth, trim={0cm 16cm 0cm 3cm}]{figures/architecture.pdf}
     \end{figure}
 
-
-    \newpage
-    \textbf{browser traces} collected in cookies for every search query user issues, part of recommender system.
+    The software components are: crawler, indexer, database, backend, frontend.\\
+    RESTful APIs are used as interface for commucation between indexer-backend and backend-frontend.
+    Communication between database-backend is encapsulated by Django,
+    while crawler-indexer needs to be run manually through CLI prompt and file writing.
 
     \subsection{Technology Stack}
+    Mandatory technologies to use for the project implementation: scrapy, pyterrier.
+    Here below is listed the tech stack used with a short description and motivation of choice.
 
     \subsubsection{Scrapy}
-    Scrapy, a Python framework for web crawling and scraping, is utilized in to initiate the crawling/scraping process for a specified set of artworks. The extracted data is subsequently channeled into a .json file.
+    Scrapy is a Python application framework for crawling web sites and extracting structured data.
+    It is used to initialize the crawling \& scraping process for a specified set of artworks.
+    Crawling process is further discussed in section \ref{sec:crawling}.
 
     \subsubsection{PyTerrier}
-    PyTerrier is a Python library that provides a high-level interface for the Terrier information retrieval system. In the provided code snippet, PyTerrier is used for building an information retrieval system to search and index documents.\newline
-    Our index.py file uses PyTerrier to create the index starting from the .json file
+    PyTerrier is a Python declarative platform for information retrieval experiments.
+    It uses the Java-based Terrier information retrieval platform internally to support indexing and
+    retrieval operations.
+    Indexer process is further discussed in section \ref{sec:indexing}.
 
     \subsubsection{Django \& SQLite}
-    The main part of the project has been carried using a Django based backend. The backend handles the main fetches from the frontend.
-    The backend is also the joint between the frontend and the index, making calls to a FASTApi that returns relevant documents given a query.\newline
-    To return to the frontend the main information about the documents, the backend iterates through a database in SQLite that contains the main information for each artwork
+    Django is a
+    FOSS\footnote{Free and Open Source}
+    high-level Python web framework for rapid development and clean, pragmatic design.
+    It takes care of much of the hassle of web development.\\
+    By default, the Django configuration uses SQLite as database,
+    which is the easiest choice of implementation already is included in Python.
+    Backend functionality and interaction with database is detailed in Sections
+    \ref{sec:backend}.
 
-    \subsubsection{Vue.js \& PrimeVue}
-    Finally, to develop the frontend, it has been used Vue.js, using the PrimeVue as UI library. Vue.js allows us to create a reactive and dynamic user interface, while PrimeVue provides us with a set of pre-built components and styles.
+    \subsubsection{Vue.js 3 \& PrimeVue}
+    The progressive javascript framework described as approachable, performant and versatile
+    for building web user interfaces.
+    It is an industry standard among the js component-based frameworks and it is used in courses
+    since the 2\textsuperscript{nd} year of the bachelor.\\
+    Together with PrimeVue, a complete UI suite for Vue.js, it elevates the web application with
+    customizable, feature-rich UI components.
+    %check responsivess
+    Frontend design specifics are in Sections \ref{sec:frontend}, \ref{sec:ui}, \ref{sec:ux}.\\
+
+    The search engine requirements are futher described, measured and discussed
+    in the Evaluation Section \ref{sec:evaluation}.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \section{Crawling}\label{sec:crawling}
+    Part of \textbf{Indexing Process}, regarding \textbf{Text Acquisition}, in which the system
+    identifies and stores documents for indexing.
+
     Harnesing (relatively) Bit Text Data characterized with the 5
     Vs \footnote{Volume, Variety, Velocity, Value, Veracity},
     we lack automating the Velocity attribute since we need to rerun the spiders manually to update its
     status on the inverted index.
     Crawling parses text that is unstructed to group them in well-structured documents, allowing them to be
     easily indexed.
+    The extracted data is subsequently channeled into a .json file.
 
     \section{Indexing}\label{sec:indexing}
+    Part of \textbf{Indexing Process}, regarding \textbf{Text Transformation}, in which the system
+    transforms documents into index terms or features, \textbf{Index Creation}, where the
+    system takes index terms and creates data structures to support fast searching,
+    and \textbf{Ranking and Retrieval}, which uses query and index to generate a ranked list of docs.
+
     The Pyterrier platform supports indexing and retrieval operations by employing shallow
     NLP \footnote{Natural Language Processing}
-    techniques to enable computers to understand the meaning of natural language text.
-
-    \section{Retrieval}
-    \subsection{Backend}
-    The backend relies on a SQLite database to store the main information about the documents, making possible to retrieve the relevant ones following a call to the index.\newline
-    Django serves as the foundational framework for constructing the primary structure, bringing with it a multitude of advantages such as rapid development, a robust and secure architecture, built-in administrative features, and a thriving community support ecosystem.\newline
-    The backend handles the two main fetches of the application:
-    \begin{itemize}
-        \item /api/documents/get-documents/"query"/: This endpoint facilitates the retrieval of relevant documents based on a provided query string.
-        \item /api/recommendation/get-recommended/: This endpoint is tasked with retrieving recommended artworks. By inputting a set of tags, it conducts a search within the index, returning all pertinent documents associated with the specified criteria.
-    \end{itemize}
+    techniques to enable computers to understand the meaning of natural language text.\\
+    Our index.py file uses PyTerrier to create the index starting from the .json file.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \subsection{Frontend}
+    \section{Retrieval}
+
+    \textbf{browser traces} collected in cookies for every search query user issues, part of recommender system.
+
+    \subsection{Backend}\label{sec:backend}
+    The backend relies on a SQLite database to store the main information about the documents,
+    making possible to retrieve the relevant ones following a call to the index.\newline
+    Django serves as the foundational framework for constructing the primary structure,
+    bringing with it a multitude of advantages such as rapid development, a robust and secure architecture,
+    built-in administrative features, and a thriving community support ecosystem.\newline
+    The backend handles the two main fetches of the application:
+    \begin{itemize}
+        \item /api/documents/get-documents/"query"/:
+              This endpoint facilitates the retrieval of relevant documents based on a provided query string.
+        \item /api/recommendation/get-recommended/:
+              This endpoint is tasked with retrieving recommended artworks.
+              By inputting a set of tags, it conducts a search within the index,
+              returning all pertinent documents associated with the specified criteria.
+    \end{itemize}
+    The backend handles the main fetches from the frontend.
+    The backend is also the joint between the frontend and the index,
+    making calls to a FASTApi that returns relevant documents given a query.
+    To return to the frontend the main information about the documents,
+    the backend iterates through a database in SQLite that contains the main information
+    for each artwork.
+
+    \subsection{Frontend}\label{sec:frontend}
+    Part of \textbf{Query and Retrieval Process}, regarding \textbf{User Interaction},
+    in which the system supports the creation of a query and display results.
+
+    transforms documents into index terms or features, and \textbf{Index Creation}, where the
+    system takes index terms and creates data structures to support fast searching.
+
     The frontend is the main part of the application, where all the features are implemented.\newline
     For the interface, it has been chosen a simple layout, consisting of only a search-bar and a search button. Once the user performs the search, the aspect of the page changes, adding new components. We will examine each of them:
     \begin{itemize}
@@ -165,6 +222,8 @@
         \item Second, there will be shown some carousels for the recommended results based on the most frequents tags of the resulted artworks. Essentially, once all the artworks related to the query have been retrieved, the frontend extracts from all these artworks the related tags, it chooses the ones with the higher frequency and, using the /api/recommendation/get-recommended/ fetch, it shows a maximum of 5 results related to each tag in a moving carousel
         \item Finally, the artworks retrieved from the query are displayed in a card-like style, showing an insight of the artwork, the author, the title, the price, a short description and the main tags, with a Visit button that will bring the user to the page of that artwork in the original site
     \end{itemize}
+
+    Vue.js allows us to create a reactive and dynamic user interface,
 
     \subsubsection{User Interface}\label{sec:ui}
 
@@ -175,11 +234,17 @@
     standard filtering system
 
 
+    %\section{Feedback}
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    \section{Evaluation}
+    \section{Evaluation}\label{sec:evaluation}
+    Part of the \textbf{Query and Retrieval Process}, regarding \textbf{Evaluation}.\\
+
+    \textbf{Effectiveness}: quality of results. \textbf{Efficiency}: response time and throughput.
+
     System evaluation: Recall and precision paragraph
 
     \subsection{User Evaluation}
+    Part of the \textbf{Relevance Feedback Process}, regarding \textbf{User Evaluation}
 
     SUS includes pia, quote are designers users too?
 
@@ -205,10 +270,16 @@
     We enjoyed the project freedom that allowed us to put in practice all the metholodogies
     learnt from this course and all the others we had during the bachelor.
 
-    \section{References}
+    \section{References}\label{sec:references}
     \begin{itemize}
-        \item \textit{ArtForSale} GitHub project public repository:\\
-              \url{https://github.com/JekxDevil/IR-ArtForSale}
+        \item \textit{ArtForSale} GitHub public repository: \url{https://github.com/JekxDevil/IR-ArtForSale}
+        \item Course slides on iCorsi: \url{https://www.icorsi.ch/course/view.php?id=16928}
+        \item \textit{Scrapy}: \url{https://docs.scrapy.org}
+        \item \textit{Pyterrier}: \url{https://pyterrier.readthedocs.io}
+        \item \textit{FastAPI}: \url{https://fastapi.tiangolo.com/}
+        \item \textit{Django}: \url{https://www.djangoproject.com/}
+        \item \textit{Vue.js 3}: \url{https://vuejs.org/}
+        \item \textit{PrimeVue}: \url{https://primevue.org/}
     \end{itemize}
 
 \end{spacing}
